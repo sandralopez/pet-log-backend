@@ -1,6 +1,9 @@
 const express = require('express');
 const LogsService = require('./../services/log');
 
+const validatorHandler = require('./../middlewares/validation-handler');
+const { createLogSchema, updateLogSchema, getLogSchema } = require('./../schemas/log');
+
 const router = express.Router();
 const service = new LogsService();
 
@@ -15,7 +18,9 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', 
+    validatorHandler(getLogSchema, 'params'),
+    async (req, res, next) => {
     try {
         const { id } = req.params;
 
@@ -28,7 +33,9 @@ router.get('/:id', async (req, res, next) => {
     }
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', 
+    validatorHandler(createLogSchema, 'body'),
+    async (req, res, next) => {
     try {
         const data = req.body;
 
@@ -41,7 +48,10 @@ router.post('/', async (req, res, next) => {
     }
 });
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', 
+    validatorHandler(getLogSchema, 'params'),
+    validatorHandler(updateLogSchema, 'body'),
+    async (req, res, next) => {
     try {
         const { id } = req.params;
         const data = req.body;
@@ -55,7 +65,9 @@ router.patch('/:id', async (req, res, next) => {
     }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', 
+    validatorHandler(getLogSchema, 'params'),
+    async (req, res, next) => {
     try {
         const { id } = req.params;
 

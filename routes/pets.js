@@ -1,6 +1,9 @@
 const express = require('express');
 const PetsService = require('./../services/pet');
 
+const validatorHandler = require('./../middlewares/validation-handler');
+const { createPetSchema, updatePetSchema, getPetSchema } = require('./../schemas/pet');
+
 const Model = require('../models/user');
 const service = new PetsService();
 
@@ -19,7 +22,9 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:petId', async (req, res, next) => {
+router.get('/:petId', 
+    validatorHandler(getPetSchema, 'params'),
+    async (req, res, next) => {
 	try {
 		const { userId, petId } = req.params;
 	
@@ -32,7 +37,9 @@ router.get('/:petId', async (req, res, next) => {
 	}
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', 
+    validatorHandler(createPetSchema, 'body'),
+    async (req, res, next) => {
 	try {
 		const { userId } = req.params;
 
@@ -47,7 +54,10 @@ router.post('/', async (req, res, next) => {
 	}
 });
 
-router.patch('/:petId', async (req, res, next) => {
+router.patch('/:petId', 
+    validatorHandler(getPetSchema, 'params'),
+    validatorHandler(updatePetSchema, 'body'),
+    async (req, res, next) => {
 	try {
 		const { userId, petId } = req.params;
 
@@ -62,7 +72,9 @@ router.patch('/:petId', async (req, res, next) => {
 	}
 });
 
-router.delete('/:petId', async (req, res, next) => {
+router.delete('/:petId', 
+    validatorHandler(getPetSchema, 'params'),
+    async (req, res, next) => {
     try{
     	const { userId, petId } = req.params;
 

@@ -1,6 +1,9 @@
 const express = require('express');
 const TagsService = require('./../services/tag');
 
+const validatorHandler = require('./../middlewares/validation-handler');
+const { createTagSchema, updateTagSchema, getTagSchema } = require('./../schemas/tag');
+
 const Model = require('../models/user');
 const service = new TagsService();
 
@@ -19,7 +22,9 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:tagId', async (req, res, next) => {
+router.get('/:tagId', 
+    validatorHandler(getTagSchema, 'params'),
+    async (req, res, next) => {
 	try {
 		const { userId, tagId } = req.params;
 	
@@ -32,7 +37,9 @@ router.get('/:tagId', async (req, res, next) => {
 	}
 });
 
-router.post('/', async (req, res, next) => {
+router.post('/', 
+    validatorHandler(createTagSchema, 'body'),
+    async (req, res, next) => {
 	try {
 		const { userId } = req.params;
 
@@ -47,7 +54,10 @@ router.post('/', async (req, res, next) => {
 	}
 });
 
-router.patch('/:tagId', async (req, res, next) => {
+router.patch('/:tagId', 
+    validatorHandler(getTagSchema, 'params'),
+    validatorHandler(updateTagSchema, 'body'),
+    async (req, res, next) => {
 	try {
 		const { userId, tagId } = req.params;
 
@@ -62,7 +72,9 @@ router.patch('/:tagId', async (req, res, next) => {
 	}
 });
 
-router.delete('/:tagId', async (req, res, next) => {
+router.delete('/:tagId', 
+    validatorHandler(getTagSchema, 'params'),
+    async (req, res, next) => {
     try{
     	const { userId, tagId } = req.params;
 
