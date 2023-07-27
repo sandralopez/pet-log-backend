@@ -5,6 +5,8 @@ const routerApi = require('./routes');
 const mongoose = require('mongoose');
 const conn = process.env.DATABASE_URL;
 
+const { errorHandler, boomErrorHandler } = require('./middlewares/error-handler');
+
 mongoose.connect(conn);
 const database = mongoose.connection;
 
@@ -26,5 +28,8 @@ app.get('/', (req, res) => {
 });
 
 routerApi(app);
+
+app.use(boomErrorHandler);
+app.use(errorHandler);
 
 app.listen(port);

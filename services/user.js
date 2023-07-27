@@ -1,4 +1,5 @@
 const Model = require('../models/user');
+const boom = require('@hapi/boom');
 
 class UsersService {
 	consctructor() { }
@@ -24,7 +25,7 @@ class UsersService {
 		const result = await Model.findById(userId);
 
         if (!result) {
-        	throw new Error("Not found");
+        	throw boom.notFound('User not found');
         }
 
 		return result;
@@ -38,7 +39,7 @@ class UsersService {
         )
 
         if (!result) {
-        	throw new Error("Not found");
+        	throw boom.notFound('User not found');
         }
 
         return result;
@@ -48,7 +49,7 @@ class UsersService {
         const result = await Model.findByIdAndDelete(userId);
 
         if (!result) {
-        	throw new Error("Not found");
+        	throw boom.notFound('User not found');
         }
 
         return result;

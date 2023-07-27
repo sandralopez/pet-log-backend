@@ -1,4 +1,5 @@
 const Model = require('../models/user');
+const boom = require('@hapi/boom');
 
 class TagsService {
 	consctructor() { }
@@ -12,7 +13,7 @@ class TagsService {
 	    const user = await Model.findById(userId);
 
 	    if (!user) {
-	      throw new Error("User not found");
+	      throw boom.notFound('User not found');
 	    }
 
 	    user.tags.push(newTag);
@@ -26,7 +27,7 @@ class TagsService {
     	const user = await Model.findById(userId);
 
 	    if (!user) {
-	      throw new Error('User not found');
+	      throw boom.notFound('User not found');
 	    }
 
         return user.tags;
@@ -36,13 +37,13 @@ class TagsService {
 	    const user = await Model.findById(userId);
 
 	    if (!user) {
-	      throw new Error('User not found');
+	      throw boom.notFound('User not found');
 	    }
 
 	    const tag = user.tags.id(tagId);
 
 	    if (!tag) {
-	    	throw new Error('Tag not found');
+	    	throw boom.notFound('Tag not found');
 	    }
 
 	    return tag;
@@ -52,13 +53,13 @@ class TagsService {
 	    const user = await Model.findById(userId);
 
 	    if (!user) {
-	      	throw new Error('User not found');
+	      	throw boom.notFound('User not found');
 	    }
 
 	    const tag = user.tags.id(tagId);
 
 	    if (!tag) {
-	    	throw new Error('Tag not found');
+	    	throw boom.notFound('Tag not found');
 	    }
 
 	    tag.set(data);
@@ -71,13 +72,13 @@ class TagsService {
     	const user = await Model.findById(userId);
 
 	    if (!user) {
-	      	throw new Error('User not found');
+	      	throw boom.notFound('User not found');
 	    }
 
 	    const tag = user.tags.id(tagId);
 
 	    if(!tag) {
-	    	throw new Error('Tag not found');
+	    	throw boom.notFound('Tag not found');
 	    }
 
 	    user.tags.pull(tagId);

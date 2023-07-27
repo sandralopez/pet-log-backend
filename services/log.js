@@ -1,4 +1,5 @@
 const Model = require('../models/log');
+const boom = require('@hapi/boom');
 
 class LogsService {
 	consctructor() { }
@@ -24,7 +25,7 @@ class LogsService {
 		const result = await Model.findById(logId);
 
         if (!result) {
-        	throw new Error("Not found");
+        	throw boom.notFound('Log not found');
         }
 
 		return result;
@@ -38,7 +39,7 @@ class LogsService {
         )
 
         if (!result) {
-        	throw new Error("Not found");
+        	throw boom.notFound('Log not found');
         }
 
         return result;
@@ -48,7 +49,7 @@ class LogsService {
         const result = await Model.findByIdAndDelete(logId);
 
         if (!result) {
-        	throw new Error("Not found");
+        	throw boom.notFound('Log not found');
         }
 
         return result;

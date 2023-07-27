@@ -1,4 +1,5 @@
 const Model = require('../models/user');
+const boom = require('@hapi/boom');
 
 class PetsService {
 	consctructor() { }
@@ -12,7 +13,7 @@ class PetsService {
 	    const user = await Model.findById(userId);
 
 	    if (!user) {
-	      throw new Error("User not found");
+	      throw boom.notFound('User not found');
 	    }
 
 	    user.pets.push(newPet);
@@ -26,7 +27,7 @@ class PetsService {
     	const user = await Model.findById(userId);
 
 	    if (!user) {
-	      throw new Error('User not found');
+	    	throw boom.notFound('User not found');
 	    }
 
         return user.pets;
@@ -36,13 +37,13 @@ class PetsService {
 	    const user = await Model.findById(userId);
 
 	    if (!user) {
-	      throw new Error('User not found');
+	      throw boom.notFound('User not found');
 	    }
 
 	    const pet = user.pets.id(petId);
 
 	    if (!pet) {
-	    	throw new Error('Pet not found');
+	    	throw boom.notFound('Pet not found');
 	    }
 
 	    return pet;
@@ -52,13 +53,13 @@ class PetsService {
 	    const user = await Model.findById(userId);
 
 	    if (!user) {
-	      	throw new Error('User not found');
+	      	throw boom.notFound('User not found');
 	    }
 
 	    const pet = user.pets.id(petId);
 
 	    if (!pet) {
-	    	throw new Error('Pet not found');
+	    	throw boom.notFound('Pet not found');
 	    }
 
 	    pet.set(data);
@@ -71,13 +72,13 @@ class PetsService {
     	const user = await Model.findById(userId);
 
 	    if (!user) {
-	      	throw new Error('User not found');
+	      	throw boom.notFound('User not found');
 	    }
 
 	    const pet = user.pets.id(petId);
 
 	    if(!pet) {
-	    	throw new Error('Pet not found');
+	    	throw boom.notFound('Pet not found');
 	    }
 
 	    user.pets.pull(petId);
