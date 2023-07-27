@@ -1,146 +1,77 @@
 const express = require('express');
+const PetsService = require('./../services/pet');
+
 const Model = require('../models/user');
+const service = new PetsService();
 
 const router = express.Router({mergeParams: true});
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try{
     	const { userId } = req.params;
     	
-    	const user = await Model.findById(userId);
+        const result = await service.find(userId);
 
-	    if (!user) {
-	      return res.status(404).json({ error: 'Not found' });
-	    }
-
-        res.json(user.pets);
+        res.status(200).json(result);
     }
     catch(error){
-        if (error.name === "ValidationError") {
-            res.status(400).json({message: error.message})
-        }
-
-        res.status(500).json({message: error.message})
+        next(error);
     }
 });
 
-router.get('/:petId', async (req, res) => {
+router.get('/:petId', async (req, res, next) => {
 	try {
 		const { userId, petId } = req.params;
 	
-	    const user = await Model.findById(userId);
+	    result = await service.findOne(userId, petId);
 
-	    if (!user) {
-	      return res.status(404).json({ error: 'Not found' });
-	    }
-
-	    const pet = user.pets.id(petId);
-
-	    if (!pet) {
-	    	return res.status(404).json({ error: 'Not found' });
-	    }
-
-	    res.status(200).json(pet);
+        res.status(200).json(result);
 	}
 	catch (error) {
-        if (error.name === "ValidationError") {
-            res.status(400).json({message: error.message})
-        }
-
-		res.status(500).json({ message: error.message });
+        next(error);
 	}
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
 	try {
 		const { userId } = req.params;
 
-		const pet = {
-			name: req.body.name,
-			species: req.body.species,
-			birthdate: req.body.birthdate,
-			image: req.body.image,
-			created_at: new Date()
-		};
+        const data = req.body;
 
-	    const user = await Model.findById(userId);
+        const result = await service.create(data, userId);
 
-	    if (!user) {
-	      return res.status(404).json({ error: 'Not found' });
-	    }
-
-	    user.pets.push(pet);
-
-	    await user.save();
-
-	    res.status(201).json(user.pets);
+    	res.status(200).json(result);
 	}
 	catch (error) {
-        if (error.name === "ValidationError") {
-            res.status(400).json({message: error.message})
-        }
-
-		res.status(500).json({ message: error.message });
+        next(error);
 	}
 });
 
-router.patch('/:petId', async (req, res) => {
+router.patch('/:petId', async (req, res, next) => {
 	try {
 		const { userId, petId } = req.params;
 
-	    const user = await Model.findById(userId);
+        const data = req.body;
 
-	    if (!user) {
-	      return res.status(404).json({ error: 'Not found' });
-	    }
+        const result = await service.update(userId, petId, data);
 
-	    const pet = user.pets.id(petId);
-
-	    if (!pet) {
-	    	return res.status(404).json({ error: 'Not found' });
-	    }
-
-	    pet.set(req.body);
-	    user.save();
-
-	    res.status(200).json(pet);
+        res.status(200).json(result);
 	}
 	catch (error) {
-        if (error.name === "ValidationError") {
-            res.status(400).json({message: error.message})
-        }
-
-		res.status(500).json({ message: error.message });
+        next(error);
 	}
 });
 
-router.delete('/:petId', async (req, res) => {
+router.delete('/:petId', async (req, res, next) => {
     try{
     	const { userId, petId } = req.params;
 
-    	const user = await Model.findById(userId);
+        const result = await service.delete(userId, petId);
 
-	    if (!user) {
-	      return res.status(404).json({ error: 'Not found' });
-	    }
-
-	    const pet = user.pets.id(petId);
-
-	    if(!pet) {
-	    	return res.status(404).json({ error: 'Not found' });
-	    }
-
-	    user.pets.pull(petId);
-	    await user.save();
-
-	    res.status(200).json(pet);
+        res.status(200).json(result);
     }
     catch(error){
-        if (error.name === "ValidationError") {
-            res.status(400).json({message: error.message})
-        }
-
-        res.status(500).json({message: error.message})
+        next(error);
     }
 });
 

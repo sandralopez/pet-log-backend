@@ -1,94 +1,70 @@
 const express = require('express');
-const Model = require('../models/log');
+const LogsService = require('./../services/log');
 
 const router = express.Router();
+const service = new LogsService();
 
-router.get('/', async (req, res) => {
-    try{
-        const results = await Model.find();
-        res.json(results);
-    }
-    catch(error){
-        if (error.name === "ValidationError") {
-            res.status(400).json({message: error.message})
-        }
-
-        res.status(500).json({message: error.message})
-    }
-});
-
-router.get('/:id', async (req, res) => {
-    try{
-        const result = await Model.findById(req.params.id);
-
-        if (!result) {
-            res.status(404).json('Not found');
-        }
+router.get('/', async (req, res, next) => {
+    try {
+        const result = await service.find();
 
         res.status(200).json(result);
     }
-    catch(error){
-        res.status(500).json({message: error.message})
+    catch (error) {
+        next(error);
     }
 });
 
-router.post('/', async (req, res) => {
-	try {
-    	const data = new Model({
-    		date: req.body.date,
-    		value: req.body.value,
-    		detail: req.body.detail,
-    		pet: req.body.pet,
-    		created_at: new Date()
-    	});
+router.get('/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
 
-		const result = await data.save();
+        result = await service.findOne(id);
 
-		res.status(200).json(result);
-	}
-	catch(error) {
-        if (error.name === "ValidationError") {
-            res.status(400).json({message: error.message})
-        }
-
-		res.status(500).json({message: error.message})
-	}
+        res.status(200).json(result);
+    }
+    catch (error) {
+        next(error);
+    }
 });
 
-router.patch('/:id', async (req, res) => {
+router.post('/', async (req, res, next) => {
+    try {
+        const data = req.body;
+
+        const result = await service.create(data);
+
+        res.status(200).json(result);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
+router.patch('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
         const data = req.body;
-        const options = { new: true };
 
-        const result = await Model.findByIdAndUpdate(
-            id, data, options
-        )
+        const result = await service.update(id, data);
 
         res.status(200).json(result);
     }
     catch (error) {
-        if (error.name === "ValidationError") {
-            res.status(400).json({message: error.message})
-        }
-
-        res.status(500).json({ message: error.message })
+        next(error);
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
-        const data = await Model.findByIdAndDelete(id);
 
-        res.status(200).json(data.id);
+        const result = await service.delete(id);
+
+        res.status(200).json(result);
     }
     catch (error) {
-        if (error.name === "ValidationError") {
-            res.status(400).json({message: error.message})
-        }
-
-        res.status(500).json({ message: error.message })
+        next(error);
     }
 });
 

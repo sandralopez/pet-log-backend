@@ -1,147 +1,77 @@
 const express = require('express');
+const TagsService = require('./../services/tag');
+
 const Model = require('../models/user');
+const service = new TagsService();
 
 const router = express.Router({mergeParams: true});
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     try{
     	const { userId } = req.params;
+    	
+        const result = await service.find(userId);
 
-    	const user = await Model.findById(userId);
-
-	    if (!user) {
-	      return res.status(404).json({ error: 'Not found' });
-	    }
-
-        res.json(user.tags);
+        res.status(200).json(result);
     }
     catch(error){
-        if (error.name === "ValidationError") {
-            res.status(400).json({message: error.message})
-        }
-
-        res.status(500).json({message: error.message})
+        next(error);
     }
 });
 
-router.get('/:tagId', async (req, res) => {
-    try{
-    	const { userId, tagId } = req.params;
+router.get('/:tagId', async (req, res, next) => {
+	try {
+		const { userId, tagId } = req.params;
+	
+	    result = await service.findOne(userId, tagId);
 
-    	const user = await Model.findById(userId);
-
-	    if (!user) {
-	      return res.status(404).json({ error: 'Not found' });
-	    }
-
-	    const tag = user.tags.id(tagId);
-
-	    if(!tag) {
-	    	return res.status(404).json({ error: 'Not found' });
-	    }
-
-        res.json(tag);
-    }
-    catch(error){
-        if (error.name === "ValidationError") {
-            res.status(400).json({message: error.message})
-        }
-
-        res.status(500).json({message: error.message})
-    }
+        res.status(200).json(result);
+	}
+	catch (error) {
+        next(error);
+	}
 });
 
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
 	try {
 		const { userId } = req.params;
 
-		const tag = {
-			name: req.body.name,
-			datatype: req.body.datatype,
-			measureUnit: req.body.measureUnit,
-			timeUnit: req.body.timeUnit,
-			created_at: new Date()
-		};
+        const data = req.body;
 
-	    const user = await Model.findById(userId);
+        const result = await service.create(data, userId);
 
-	    if (!user) {
-	      return res.status(404).json({ error: 'Not found' });
-	    }
-
-	    user.tags.push(tag);
-
-	    await user.save();
-
-	    res.status(201).json(user.tags);
+    	res.status(200).json(result);
 	}
 	catch (error) {
-        if (error.name === "ValidationError") {
-            res.status(400).json({message: error.message})
-        }
-
-		res.status(500).json({ message: error.message });
+        next(error);
 	}
 });
 
-router.patch('/:tagId', async (req, res) => {
+router.patch('/:tagId', async (req, res, next) => {
 	try {
 		const { userId, tagId } = req.params;
 
-	    const user = await Model.findById(userId);
+        const data = req.body;
 
-	    if (!user) {
-	      return res.status(404).json({ error: 'Not found' });
-	    }
+        const result = await service.update(userId, tagId, data);
 
-	    const tag = user.tags.id(tagId);
-
-	    if (!tag) {
-	    	return res.status(404).json({ error: 'Not found' });
-	    }
-
-	    tag.set(req.body);
-	    user.save();
-
-	    res.status(200).json(tag);
+        res.status(200).json(result);
 	}
 	catch (error) {
-        if (error.name === "ValidationError") {
-            res.status(400).json({message: error.message})
-        }
-
-		res.status(500).json({ message: error.message });
+        next(error);
 	}
 });
 
-
-router.delete('/:tagId', async (req, res) => {
+router.delete('/:tagId', async (req, res, next) => {
     try{
     	const { userId, tagId } = req.params;
 
-    	const user = await Model.findById(userId);
+        const result = await service.delete(userId, tagId);
 
-	    if (!user) {
-	      return res.status(404).json({ error: 'Not found' });
-	    }
-
-	    const tag = user.tags.id(tagId);
-
-	    if(!tag) {
-	    	return res.status(404).json({ error: 'Not found' });
-	    }
-
-	    user.tags.pull(tagId);
-	    await user.save();
-
-	    res.json(tag);
+        res.status(200).json(result);
     }
     catch(error){
-        if (error.name === "ValidationError") {
-            res.status(400).json({message: error.message})
-        }
-
-        res.status(500).json({message: error.message})
+        next(error);
     }
 });
 
