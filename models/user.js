@@ -71,6 +71,10 @@ const UserSchema = new mongoose.Schema({
         required: true,
         type: String
     },
+    role: {
+        required: true,
+        type: String
+    },
     pets: [PetSchema],
     tags: [TagSchema],
     created_at: {

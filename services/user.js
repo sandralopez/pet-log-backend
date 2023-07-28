@@ -1,16 +1,22 @@
 const Model = require('../models/user');
 const boom = require('@hapi/boom');
+const bcrypt = require('bcrypt');
 
 class UsersService {
 	consctructor() { }
 
 	async create(data) {
+		const hash = await bcrypt.hash(data.password, 10);
+
 	    const newUser = new Model({
 	        ...data,
+	        password: hash,
 	        created_at: new Date()
 	    });
 
-	    const result = await newUser.save();
+	    const user = await newUser.save();
+		const result = user.toObject();
+		delete result.password;
 
 	    return result;
 	}
