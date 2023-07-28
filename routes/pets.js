@@ -10,6 +10,8 @@ const service = new PetsService();
 const router = express.Router({mergeParams: true});
 
 router.get('/', async (req, res, next) => {
+    // #swagger.tags = ['Pets']
+    // #swagger.summary = 'Get a list of pets from a user'
     try{
     	const { userId } = req.params;
     	
@@ -25,6 +27,8 @@ router.get('/', async (req, res, next) => {
 router.get('/:petId', 
     validatorHandler(getPetSchema, 'params'),
     async (req, res, next) => {
+    // #swagger.tags = ['Pets']
+    // #swagger.summary = 'Get one pet from a user'
 	try {
 		const { userId, petId } = req.params;
 	
@@ -40,6 +44,8 @@ router.get('/:petId',
 router.post('/', 
     validatorHandler(createPetSchema, 'body'),
     async (req, res, next) => {
+    // #swagger.tags = ['Pets']
+    // #swagger.summary = 'Create a pet for a user'
 	try {
 		const { userId } = req.params;
 
@@ -58,6 +64,8 @@ router.patch('/:petId',
     validatorHandler(getPetSchema, 'params'),
     validatorHandler(updatePetSchema, 'body'),
     async (req, res, next) => {
+    // #swagger.tags = ['Pets']
+    // #swagger.summary = 'Update a pet from a user'
 	try {
 		const { userId, petId } = req.params;
 
@@ -75,6 +83,8 @@ router.patch('/:petId',
 router.delete('/:petId', 
     validatorHandler(getPetSchema, 'params'),
     async (req, res, next) => {
+    // #swagger.tags = ['Pets']
+    // #swagger.summary = 'Delete a pet from a user'
     try{
     	const { userId, petId } = req.params;
 

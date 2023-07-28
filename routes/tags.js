@@ -10,6 +10,8 @@ const service = new TagsService();
 const router = express.Router({mergeParams: true});
 
 router.get('/', async (req, res, next) => {
+    // #swagger.tags = ['Tags']
+    // #swagger.summary = 'Get a list of tags from a user'
     try{
     	const { userId } = req.params;
     	
@@ -25,6 +27,8 @@ router.get('/', async (req, res, next) => {
 router.get('/:tagId', 
     validatorHandler(getTagSchema, 'params'),
     async (req, res, next) => {
+    // #swagger.tags = ['Tags']
+    // #swagger.summary = 'Get one tag from a user'
 	try {
 		const { userId, tagId } = req.params;
 	
@@ -40,6 +44,8 @@ router.get('/:tagId',
 router.post('/', 
     validatorHandler(createTagSchema, 'body'),
     async (req, res, next) => {
+    // #swagger.tags = ['Tags']
+    // #swagger.summary = 'Create a tag for a user'
 	try {
 		const { userId } = req.params;
 
@@ -58,6 +64,8 @@ router.patch('/:tagId',
     validatorHandler(getTagSchema, 'params'),
     validatorHandler(updateTagSchema, 'body'),
     async (req, res, next) => {
+    // #swagger.tags = ['Tags']
+    // #swagger.summary = 'Update a tag from a user'
 	try {
 		const { userId, tagId } = req.params;
 
@@ -75,6 +83,8 @@ router.patch('/:tagId',
 router.delete('/:tagId', 
     validatorHandler(getTagSchema, 'params'),
     async (req, res, next) => {
+    // #swagger.tags = ['Tags']
+    // #swagger.summary = 'Delete a tag from a user'
     try{
     	const { userId, tagId } = req.params;
 

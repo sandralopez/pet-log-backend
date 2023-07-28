@@ -8,6 +8,8 @@ const router = express.Router();
 const service = new UsersService();
 
 router.get('/', async (req, res, next) => {
+    // #swagger.tags = ['Users']
+    // #swagger.summary = 'Get a list of users'
     try {
         const result = await service.find();
 
@@ -21,6 +23,8 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', 
     validatorHandler(getUserSchema, 'params'),
     async (req, res, next) => {
+    // #swagger.tags = ['Users']
+    // #swagger.summary = 'Get one user'
     try {
         const { id } = req.params;
 
@@ -36,6 +40,8 @@ router.get('/:id',
 router.post('/', 
     validatorHandler(createUserSchema, 'body'),
     async (req, res, next) => {
+    // #swagger.tags = ['Users']
+    // #swagger.summary = 'Create a user'
     try {
         const data = req.body;
 
@@ -52,6 +58,8 @@ router.patch('/:id',
     validatorHandler(getUserSchema, 'params'),
     validatorHandler(updateUserSchema, 'body'),
     async (req, res, next) => {
+    // #swagger.tags = ['Users']
+    // #swagger.summary = 'Update a user'
     try {
         const { id } = req.params;
         const data = req.body;
@@ -68,6 +76,8 @@ router.patch('/:id',
 router.delete('/:id', 
     validatorHandler(getUserSchema, 'params'),
     async (req, res, next) => {
+    // #swagger.tags = ['Users']
+    // #swagger.summary = 'Delete a user'
     try {
         const { id } = req.params;
 

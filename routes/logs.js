@@ -8,6 +8,8 @@ const router = express.Router();
 const service = new LogsService();
 
 router.get('/', async (req, res, next) => {
+    // #swagger.tags = ['Logs']
+    // #swagger.summary = 'Get a list of logs'
     try {
         const result = await service.find();
 
@@ -21,6 +23,8 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', 
     validatorHandler(getLogSchema, 'params'),
     async (req, res, next) => {
+    // #swagger.tags = ['Logs']
+    // #swagger.summary = 'Get a log item'
     try {
         const { id } = req.params;
 
@@ -36,6 +40,8 @@ router.get('/:id',
 router.post('/', 
     validatorHandler(createLogSchema, 'body'),
     async (req, res, next) => {
+    // #swagger.tags = ['Logs']
+    // #swagger.summary = 'Create a log item'
     try {
         const data = req.body;
 
@@ -52,6 +58,8 @@ router.patch('/:id',
     validatorHandler(getLogSchema, 'params'),
     validatorHandler(updateLogSchema, 'body'),
     async (req, res, next) => {
+    // #swagger.tags = ['Logs']
+    // #swagger.summary = 'Update a log item'
     try {
         const { id } = req.params;
         const data = req.body;
@@ -68,6 +76,8 @@ router.patch('/:id',
 router.delete('/:id', 
     validatorHandler(getLogSchema, 'params'),
     async (req, res, next) => {
+    // #swagger.tags = ['Logs']
+    // #swagger.summary = 'Delete a log item'
     try {
         const { id } = req.params;
 
