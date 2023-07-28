@@ -37,7 +37,7 @@
         }
       }
     },
-    "/api/v1/users/{id}": {
+    "/api/v1/users/{userId}": {
       "get": {
         "tags": [
           "Users"
@@ -46,7 +46,7 @@
         "description": "",
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -66,7 +66,7 @@
         "description": "",
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -86,7 +86,7 @@
         "description": "",
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -343,13 +343,27 @@
         }
       }
     },
-    "/api/v1/logs/": {
+    "/api/v1/users/{userId}/pets/{petId}/logs/": {
       "get": {
         "tags": [
           "Logs"
         ],
-        "summary": "Get a list of logs",
+        "summary": "Get a list of logs from a user",
         "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "petId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -360,8 +374,22 @@
         "tags": [
           "Logs"
         ],
-        "summary": "Create a log item",
+        "summary": "Create a log item for a user",
         "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "petId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -369,7 +397,7 @@
         }
       }
     },
-    "/api/v1/logs/{id}": {
+    "/api/v1/users/{userId}/pets/{petId}/logs/{logId}": {
       "get": {
         "tags": [
           "Logs"
@@ -378,7 +406,19 @@
         "description": "",
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "petId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "logId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -398,7 +438,19 @@
         "description": "",
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "petId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "logId",
             "in": "path",
             "required": true,
             "type": "string"
@@ -418,7 +470,19 @@
         "description": "",
         "parameters": [
           {
-            "name": "id",
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "petId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "logId",
             "in": "path",
             "required": true,
             "type": "string"

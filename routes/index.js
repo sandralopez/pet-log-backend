@@ -13,7 +13,7 @@ function routerApi(app) {
 	router.use('/users', usersRouter);
 	router.use('/users/:userId/pets', petsRouter);
 	router.use('/users/:userId/tags', tagsRouter);
-	router.use('/logs', logsRouter);
+	router.use('/users/:userId/pets/:petId/logs', logsRouter);
 	router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 }
 

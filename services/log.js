@@ -1,12 +1,26 @@
 const Model = require('../models/log');
+const User = require('../models/user');
 const boom = require('@hapi/boom');
 
 class LogsService {
 	consctructor() { }
 
-	async create(data) {
+	async create(userId, petId, data) {
+	    const user = await User.findById(userId);
+
+	    if (!user) {
+	      throw boom.notFound('User not found');
+	    }
+
+	    const pet = user.pets.id(petId);
+
+	    if (!pet) {
+	    	throw boom.notFound('Pet not found');
+	    }
+
 	    const newLog = new Model({
 	        ...data,
+	        pet: petId,
 	        created_at: new Date()
 	    });
 
@@ -15,13 +29,37 @@ class LogsService {
 	    return result;
 	}
 
-	async find() {
-		const results = await Model.find();
+	async find(userId, petId) {
+	    const user = await User.findById(userId);
+
+	    if (!user) {
+	      throw boom.notFound('User not found');
+	    }
+
+	    const pet = user.pets.id(petId);
+
+	    if (!pet) {
+	    	throw boom.notFound('Pet not found');
+	    }
+
+		const results = await Model.find({ pet: petId });
 
 		return results;
 	}
 
-	async findOne(logId) {
+	async findOne(userId, petId, logId) {
+	    const user = await User.findById(userId);
+
+	    if (!user) {
+	      throw boom.notFound('User not found');
+	    }
+
+	    const pet = user.pets.id(petId);
+
+	    if (!pet) {
+	    	throw boom.notFound('Pet not found');
+	    }
+
 		const result = await Model.findById(logId);
 
         if (!result) {
@@ -31,7 +69,19 @@ class LogsService {
 		return result;
 	}
 
-	async update(logId, data) {
+	async update(userId, petId, logId, data) {
+	    const user = await User.findById(userId);
+
+	    if (!user) {
+	      throw boom.notFound('User not found');
+	    }
+
+	    const pet = user.pets.id(petId);
+
+	    if (!pet) {
+	    	throw boom.notFound('Pet not found');
+	    }
+
         const options = { new: true };
 
         const result = await Model.findByIdAndUpdate(
@@ -45,7 +95,19 @@ class LogsService {
         return result;
 	}
 
-	async delete(logId) {
+	async delete(userId, petId, logId) {
+	    const user = await User.findById(userId);
+
+	    if (!user) {
+	      throw boom.notFound('User not found');
+	    }
+
+	    const pet = user.pets.id(petId);
+
+	    if (!pet) {
+	    	throw boom.notFound('Pet not found');
+	    }
+
         const result = await Model.findByIdAndDelete(logId);
 
         if (!result) {

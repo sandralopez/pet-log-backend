@@ -20,15 +20,15 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:id', 
+router.get('/:userId', 
     validatorHandler(getUserSchema, 'params'),
     async (req, res, next) => {
     // #swagger.tags = ['Users']
     // #swagger.summary = 'Get one user'
     try {
-        const { id } = req.params;
+        const { userId } = req.params;
 
-        result = await service.findOne(id);
+        result = await service.findOne(userId);
 
         res.status(200).json(result);
     }
@@ -54,17 +54,17 @@ router.post('/',
     }
 });
 
-router.patch('/:id', 
+router.patch('/:userId', 
     validatorHandler(getUserSchema, 'params'),
     validatorHandler(updateUserSchema, 'body'),
     async (req, res, next) => {
     // #swagger.tags = ['Users']
     // #swagger.summary = 'Update a user'
     try {
-        const { id } = req.params;
+        const { userId } = req.params;
         const data = req.body;
 
-        const result = await service.update(id, data);
+        const result = await service.update(userId, data);
 
         res.status(200).json(result);
     }
@@ -73,15 +73,15 @@ router.patch('/:id',
     }
 });
 
-router.delete('/:id', 
+router.delete('/:userId', 
     validatorHandler(getUserSchema, 'params'),
     async (req, res, next) => {
     // #swagger.tags = ['Users']
     // #swagger.summary = 'Delete a user'
     try {
-        const { id } = req.params;
+        const { userId } = req.params;
 
-        const result = await service.delete(id);
+        const result = await service.delete(userId);
 
         res.status(200).json(result);
     }
