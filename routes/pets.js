@@ -11,11 +11,14 @@ const router = express.Router({mergeParams: true});
 
 router.get('/', async (req, res, next) => {
     // #swagger.tags = ['Pets']
-    // #swagger.summary = 'Get a list of pets from a user'
+    // #swagger.summary = 'Get a list of pets from the current user'
+    /* #swagger.security = [{
+               "bearerAuth": []
+    }] */
     try{
-    	const { userId } = req.params;
+    	const user = req.user;
     	
-        const result = await service.find(userId);
+        const result = await service.find(user.sub);
 
         res.status(200).json(result);
     }
@@ -28,11 +31,16 @@ router.get('/:petId',
     validatorHandler(getPetSchema, 'params'),
     async (req, res, next) => {
     // #swagger.tags = ['Pets']
-    // #swagger.summary = 'Get one pet from a user'
+    // #swagger.summary = 'Get one pet from the current user'
+    /* #swagger.security = [{
+               "bearerAuth": []
+    }] */
 	try {
-		const { userId, petId } = req.params;
+		const { petId } = req.params;
+
+        const user = req.user;
 	
-	    result = await service.findOne(userId, petId);
+	    result = await service.findOne(user.sub, petId);
 
         res.status(200).json(result);
 	}
@@ -45,13 +53,18 @@ router.post('/',
     validatorHandler(createPetSchema, 'body'),
     async (req, res, next) => {
     // #swagger.tags = ['Pets']
-    // #swagger.summary = 'Create a pet for a user'
+    // #swagger.summary = 'Create a pet for the current user'
+    /* #swagger.security = [{
+               "bearerAuth": []
+    }] */
 	try {
 		const { userId } = req.params;
 
+        const user = req.user;
+
         const data = req.body;
 
-        const result = await service.create(data, userId);
+        const result = await service.create(data, user.sub);
 
     	res.status(200).json(result);
 	}
@@ -65,13 +78,18 @@ router.patch('/:petId',
     validatorHandler(updatePetSchema, 'body'),
     async (req, res, next) => {
     // #swagger.tags = ['Pets']
-    // #swagger.summary = 'Update a pet from a user'
+    // #swagger.summary = 'Update a pet from the current user'
+    /* #swagger.security = [{
+               "bearerAuth": []
+    }] */
 	try {
-		const { userId, petId } = req.params;
+		const { petId } = req.params;
+
+        const user = req.user;
 
         const data = req.body;
 
-        const result = await service.update(userId, petId, data);
+        const result = await service.update(user.sub, petId, data);
 
         res.status(200).json(result);
 	}
@@ -84,11 +102,16 @@ router.delete('/:petId',
     validatorHandler(getPetSchema, 'params'),
     async (req, res, next) => {
     // #swagger.tags = ['Pets']
-    // #swagger.summary = 'Delete a pet from a user'
+    // #swagger.summary = 'Delete a pet from the current user'
+    /* #swagger.security = [{
+               "bearerAuth": []
+    }] */
     try{
-    	const { userId, petId } = req.params;
+    	const { petId } = req.params;
 
-        const result = await service.delete(userId, petId);
+        const user = req.user;
+
+        const result = await service.delete(user.sub, petId);
 
         res.status(200).json(result);
     }

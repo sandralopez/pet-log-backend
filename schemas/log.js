@@ -1,6 +1,5 @@
 const Joi = require('joi');
 
-const userId = Joi.string().hex().length(24);
 const petId = Joi.string().hex().length(24);
 const logId = Joi.string().hex().length(24);
 const date = Joi.date();
@@ -23,12 +22,10 @@ const updateLogSchema = Joi.object({
 });
 
 const logFromUserPet = Joi.object({
-	userId: userId.required(),
 	petId: petId.required()
 });
 
 const getLogSchema = Joi.object({
-	userId: userId.required(),
 	petId: petId.required(),
 	logId: logId.required()
 });

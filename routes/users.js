@@ -1,15 +1,23 @@
 const express = require('express');
+const passport = require('passport');
 const UsersService = require('./../services/user');
 
 const validatorHandler = require('./../middlewares/validation-handler');
+const { checkRoles } = require('./../middlewares/auth-handler');
 const { createUserSchema, updateUserSchema, getUserSchema } = require('./../schemas/user');
 
 const router = express.Router();
 const service = new UsersService();
 
-router.get('/', async (req, res, next) => {
+router.get('/', 
+    passport.authenticate('jwt', { session: false }), 
+    checkRoles('admin'),
+    async (req, res, next) => {
     // #swagger.tags = ['Users']
     // #swagger.summary = 'Get a list of users'
+    /* #swagger.security = [{
+               "bearerAuth": []
+    }] */
     try {
         const result = await service.find();
 
@@ -20,15 +28,20 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:userId', 
+router.get('/me', 
+    passport.authenticate('jwt', { session: false }), 
+    checkRoles('admin', 'user'),
     validatorHandler(getUserSchema, 'params'),
     async (req, res, next) => {
     // #swagger.tags = ['Users']
-    // #swagger.summary = 'Get one user'
+    // #swagger.summary = 'Get current user'
+    /* #swagger.security = [{
+               "bearerAuth": []
+    }] */
     try {
-        const { userId } = req.params;
+        const user = req.user;
 
-        result = await service.findOne(userId);
+        result = await service.findOne(user.sub);
 
         res.status(200).json(result);
     }
@@ -54,17 +67,23 @@ router.post('/',
     }
 });
 
-router.patch('/:userId', 
+router.patch('/me', 
+    passport.authenticate('jwt', { session: false }), 
+    checkRoles('admin', 'user'),
     validatorHandler(getUserSchema, 'params'),
     validatorHandler(updateUserSchema, 'body'),
     async (req, res, next) => {
     // #swagger.tags = ['Users']
-    // #swagger.summary = 'Update a user'
+    // #swagger.summary = 'Update current user'
+    /* #swagger.security = [{
+               "bearerAuth": []
+    }] */
     try {
-        const { userId } = req.params;
+        const user = req.user;
+
         const data = req.body;
 
-        const result = await service.update(userId, data);
+        const result = await service.update(user.sub, data);
 
         res.status(200).json(result);
     }
@@ -73,15 +92,20 @@ router.patch('/:userId',
     }
 });
 
-router.delete('/:userId', 
+router.delete('/me', 
+    passport.authenticate('jwt', { session: false }), 
+    checkRoles('admin', 'user'),
     validatorHandler(getUserSchema, 'params'),
     async (req, res, next) => {
     // #swagger.tags = ['Users']
-    // #swagger.summary = 'Delete a user'
+    // #swagger.summary = 'Delete current user'
+    /* #swagger.security = [{
+               "bearerAuth": []
+    }] */
     try {
-        const { userId } = req.params;
+        const user = req.user;
 
-        const result = await service.delete(userId);
+        const result = await service.delete(user.sub);
 
         res.status(200).json(result);
     }

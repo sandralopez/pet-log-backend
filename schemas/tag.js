@@ -1,6 +1,5 @@
 const Joi = require('joi');
 
-const userId = Joi.string().hex().length(24);
 const tagId = Joi.string().hex().length(24);
 const name = Joi.string().regex(/^[A-Za-z]+$/).min(3).max(128);
 const datatype = Joi.string().regex(/^[A-Za-z]+$/).min(3).max(128);
@@ -23,7 +22,6 @@ const updateTagSchema = Joi.object({
 });
 
 const getTagSchema = Joi.object({
-	userId: userId.required(),
 	tagId: tagId.required(),
 });
 

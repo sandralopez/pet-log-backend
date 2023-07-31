@@ -23,10 +23,12 @@ database.once('connected', () => {
 const app = express();
 const port = 3000;
 
+require('./utils/auth');
+
 app.use(express.json());
 
 app.get('/', (req, res) => {
-	res.send('Pet Log API');
+	res.send('Welcome to Pet Log API');
 });
 
 routerApi(app);

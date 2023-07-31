@@ -27,6 +27,12 @@ class UsersService {
 		return results;
 	}
 
+	async findByEmail(username) {
+		const result = await Model.findOne({ username: username });
+		
+		return result;
+	}
+
 	async findOne(userId) {
 		const result = await Model.findById(userId);
 

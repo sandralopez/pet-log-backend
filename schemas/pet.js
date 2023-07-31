@@ -1,6 +1,5 @@
 const Joi = require('joi');
 
-const userId = Joi.string().hex().length(24);
 const petId = Joi.string().hex().length(24);
 const name = Joi.string().regex(/^[A-Za-z]+$/).min(3).max(128);
 const species = Joi.string().regex(/^[A-Za-z]+$/).min(3).max(128);
@@ -23,7 +22,6 @@ const updatePetSchema = Joi.object({
 });
 
 const getPetSchema = Joi.object({
-	userId: userId.required(),
 	petId: petId.required(),
 });
 

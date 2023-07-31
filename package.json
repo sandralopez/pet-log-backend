@@ -20,7 +20,11 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.1",
+    "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
     "swagger-autogen": "^2.23.5",
     "swagger-ui-express": "^5.0.0"
   }
