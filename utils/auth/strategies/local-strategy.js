@@ -8,7 +8,7 @@ const service = new UserService();
 
 const LocalStrategy = new Strategy(async (username, password, done) => {
 	try {
-		const user = await service.findByEmail(username);
+		const user = await service.findByUsername(username);
 
 		if (!user) {
 			done(boom.unauthorized(), false);
@@ -20,10 +20,7 @@ const LocalStrategy = new Strategy(async (username, password, done) => {
 			done(boom.unauthorized(), false);
 		}
 
-		const result = user.toObject();
-		
-		result._id = result._id.toString();
-		delete result.password; 
+		const { password: passwd, created_at, pets, tags, ...result} = user.toObject();
 
 		done(null, result);
 	}
