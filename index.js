@@ -7,6 +7,7 @@ const conn = process.env.DATABASE_URL;
 
 const { checkApiKey } = require('./middlewares/auth-handler');
 const { errorHandler, boomErrorHandler } = require('./middlewares/error-handler');
+const cookieParser = require('cookie-parser');
 
 mongoose.connect(conn);
 
@@ -26,6 +27,7 @@ const port = 3000;
 require('./utils/auth');
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.get('/', (req, res) => {
 	res.send('Welcome to Pet Log API');

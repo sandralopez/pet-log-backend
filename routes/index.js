@@ -14,7 +14,7 @@ function routerApi(app) {
 
 	app.use('/api/v1', router);
 	
-	router.use('/auth/login', authRouter);
+	router.use('/auth', authRouter);
 	router.use('/users', 
 				usersRouter
 	);

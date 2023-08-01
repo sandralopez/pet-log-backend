@@ -11,7 +11,7 @@
     }
   ],
   "paths": {
-    "/api/v1/auth/login/": {
+    "/api/v1/auth/login": {
       "post": {
         "tags": [
           "Auth"
@@ -21,6 +21,20 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Refresh token",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }

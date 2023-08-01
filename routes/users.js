@@ -4,7 +4,7 @@ const UsersService = require('./../services/user');
 
 const validatorHandler = require('./../middlewares/validation-handler');
 const { checkRoles } = require('./../middlewares/auth-handler');
-const { createUserSchema, updateUserSchema, getUserSchema } = require('./../schemas/user');
+const { createUserSchema, updateUserSchema } = require('./../schemas/user');
 
 const router = express.Router();
 const service = new UsersService();
@@ -31,7 +31,6 @@ router.get('/',
 router.get('/me', 
     passport.authenticate('jwt', { session: false }), 
     checkRoles('admin', 'user'),
-    validatorHandler(getUserSchema, 'params'),
     async (req, res, next) => {
     // #swagger.tags = ['Users']
     // #swagger.summary = 'Get current user'
@@ -70,7 +69,6 @@ router.post('/',
 router.patch('/me', 
     passport.authenticate('jwt', { session: false }), 
     checkRoles('admin', 'user'),
-    validatorHandler(getUserSchema, 'params'),
     validatorHandler(updateUserSchema, 'body'),
     async (req, res, next) => {
     // #swagger.tags = ['Users']
@@ -95,7 +93,6 @@ router.patch('/me',
 router.delete('/me', 
     passport.authenticate('jwt', { session: false }), 
     checkRoles('admin', 'user'),
-    validatorHandler(getUserSchema, 'params'),
     async (req, res, next) => {
     // #swagger.tags = ['Users']
     // #swagger.summary = 'Delete current user'

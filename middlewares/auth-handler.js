@@ -26,4 +26,13 @@ function checkRoles(...roles) {
 	}
 }
 
-module.exports = { checkApiKey, checkRoles };
+function checkRefreshCookie(req, res, next) {
+	if (req.cookies?.jwt) {
+		next();
+	}
+	else {
+		next(boom.forbidden());
+	}
+}
+
+module.exports = { checkApiKey, checkRoles, checkRefreshCookie };
