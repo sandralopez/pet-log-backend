@@ -23,7 +23,7 @@ router.post('/login',
 
         const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '15m' });
 
-        const refreshToken = jwt.sign(payload, config.jwtRefreshSecret, { expiresIn: '1d' });
+        const refreshToken = jwt.sign(payload, config.jwtRefreshSecret, { expiresIn: '50m' });
 
         res.cookie('jwt', refreshToken, {
             httpOnly: true, 
