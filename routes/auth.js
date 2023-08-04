@@ -28,8 +28,8 @@ router.post('/login',
         res.cookie('jwt', refreshToken, {
             httpOnly: true, 
             sameSite: 'None', 
-            // secure: true, 
-            maxAge: 24 * 60 * 60 * 1000 
+            secure: true, 
+            maxAge: 50 * 60 * 1000 
         });
 
         res.json({
@@ -53,7 +53,6 @@ router.post('/refresh',
             const payload = jwt.verify(refreshToken, config.jwtRefreshSecret);
 
             const token = jwt.sign({ sub: payload.sub, role: payload.role}, config.jwtSecret, { expiresIn: '15m' });
-
             res
               .header('Authorization', token)
               .json(token);

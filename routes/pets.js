@@ -88,7 +88,6 @@ router.patch('/:petId',
         const user = req.user;
 
         const data = req.body;
-
         const result = await service.update(user.sub, petId, data);
 
         res.status(200).json(result);
