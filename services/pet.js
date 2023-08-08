@@ -20,7 +20,7 @@ class PetsService {
 
 	    await user.save();
 
-	    return user.pets;
+	    return user.pets[user.pets.length - 1];
 	}
 
 	async find(userId) {

@@ -20,7 +20,7 @@ class TagsService {
 
 	    await user.save();
 
-	    return user.tags;
+	    return user.tags[user.tags.length - 1];
 	}
 
 	async find(userId) {
