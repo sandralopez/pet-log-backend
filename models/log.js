@@ -5,6 +5,10 @@ const LogSchema = new mongoose.Schema({
         required: false,
         type: mongoose.Schema.Types.ObjectId
     },
+    tag: {
+        required: true,
+        type: String
+    },
     date: {
         required: true,
         type: Date
