@@ -34,7 +34,7 @@ class UsersService {
 	}
 
 	async findOne(userId) {
-		const result = await Model.findById(userId);
+		const result = await Model.findById(userId, '_id email username role created_at');
 
         if (!result) {
         	throw boom.notFound('User not found');
@@ -44,7 +44,7 @@ class UsersService {
 	}
 
 	async update(userId, data) {
-        const options = { new: true };
+        const options = { new: true, select: '_id email username role created_at' };
 
         const result = await Model.findByIdAndUpdate(
             userId, data, options
@@ -58,7 +58,9 @@ class UsersService {
 	}
 
 	async delete(userId) {
-        const result = await Model.findByIdAndDelete(userId);
+		const options = { select: '_id email username role created_at' };
+
+        const result = await Model.findByIdAndDelete(userId, options);
 
         if (!result) {
         	throw boom.notFound('User not found');
