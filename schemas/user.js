@@ -17,6 +17,8 @@ const updateUserSchema = Joi.object({
 	email: email,
 	username: username,
 	password: password,
+	newPassword: password,
+	repeatPassword: password,
 	role: role
 });
 

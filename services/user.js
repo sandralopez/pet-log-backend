@@ -28,8 +28,8 @@ class UsersService {
 	}
 
 	async findByUsername(username) {
-		const result = await Model.findOne({ username: username });
-		
+		const result = await Model.findOne({ username: username }, '_id email username role created_at password');
+
 		return result;
 	}
 
@@ -46,9 +46,19 @@ class UsersService {
 	async update(userId, data) {
         const options = { new: true, select: '_id email username role created_at' };
 
-        const result = await Model.findByIdAndUpdate(
-            userId, data, options
-        )
+        if (data.email) {
+	        const result = await Model.findByIdAndUpdate(
+	            userId, { email: data.email }, options
+	        )
+        }
+
+        if (data.newPassword) {
+        	const hash = await bcrypt.hash(data.newPassword, 10);
+
+	        const result = await Model.findByIdAndUpdate(
+	            userId, { password: hash }, options
+	        )
+        }
 
         if (!result) {
         	throw boom.notFound('User not found');

@@ -1,8 +1,10 @@
 const express = require('express');
 const passport = require('passport');
+const boom = require('@hapi/boom');
 const UsersService = require('./../services/user');
 
 const validatorHandler = require('./../middlewares/validation-handler');
+const { asyncHandler, verifyPassword } = require('./../middlewares/password-handler');
 const { checkRoles } = require('./../middlewares/auth-handler');
 const { createUserSchema, updateUserSchema } = require('./../schemas/user');
 
@@ -69,6 +71,7 @@ router.post('/',
 router.patch('/me', 
     passport.authenticate('jwt', { session: false }), 
     checkRoles('admin', 'user'),
+    asyncHandler(verifyPassword),
     validatorHandler(updateUserSchema, 'body'),
     async (req, res, next) => {
     // #swagger.tags = ['Users']
@@ -80,6 +83,10 @@ router.patch('/me',
         const user = req.user;
 
         const data = req.body;
+
+        if (data.newPassword && data.repeatPassword && data.newPassword != data.repeatPassword) {
+            throw boom.badRequest('Passwords do not match');
+        }
 
         const result = await service.update(user.sub, data);
 

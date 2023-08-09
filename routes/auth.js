@@ -33,7 +33,7 @@ router.post('/login',
         });
 
         res.json({
-            user, 
+            username: user.username, 
             token
         });
     }
