@@ -18,11 +18,17 @@ router.get('/',
     try {
         const { petId } = req.params;
 
+        const { tag } = req.query;
+
         const user = req.user;
 
         const result = await service.find(user.sub, petId);
-
-        res.status(200).json(result);
+        
+        if (tag) {
+            res.status(200).json(result.filter((log) => log.tagId.toString() === tag));
+        } else {
+            res.status(200).json(result);
+        }
     }
     catch (error) {
         next(error);

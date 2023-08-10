@@ -1,6 +1,7 @@
 const Model = require('../models/log');
 const User = require('../models/user');
 const boom = require('@hapi/boom');
+const mongoose = require('mongoose');
 
 class LogsService {
 	consctructor() { }
@@ -20,7 +21,9 @@ class LogsService {
 
 	    const newLog = new Model({
 	        ...data,
+	        tag: data.tagId,
 	        pet: petId,
+	        user: userId,
 	        created_at: new Date()
 	    });
 
@@ -42,7 +45,51 @@ class LogsService {
 	    	throw boom.notFound('Pet not found');
 	    }
 
-		const results = await Model.find({ pet: petId });
+		const results = await Model.aggregate([
+											{ 
+												$match: { 
+													pet: 
+														new mongoose.Types.ObjectId(petId), user:  
+														new mongoose.Types.ObjectId(userId)
+												} 
+											},
+										    {
+										        $lookup: {
+										            from: "users",
+										            localField: "user",
+										            foreignField: "_id",
+										            as: "user"
+										        }
+    										},
+    										{ $unwind: "$user" },
+										    {
+										        $addFields: {
+										            tag: {
+										                $arrayElemAt: [
+										                    {
+										                        $filter: {
+										                            input: "$user.tags",
+										                            as: "tag",
+										                            cond: { $eq: ["$$tag._id", "$tag"] }
+										                        }
+										                    },
+										                    0
+										                ]
+										            }
+										        }
+										    },
+										    {
+										        $project: {
+										            _id: 1,
+										            date: 1,
+										            value: 1,
+										            detail: 1,
+										            created_at: 1,
+										            tagId: "$tag._id",
+										            tagName: "$tag.name",
+										        }
+										    }
+						]);
 
 		return results;
 	}

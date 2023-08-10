@@ -7,7 +7,7 @@ const LogSchema = new mongoose.Schema({
     },
     tag: {
         required: true,
-        type: String
+        type: mongoose.Schema.Types.ObjectId
     },
     date: {
         required: true,
@@ -22,6 +22,10 @@ const LogSchema = new mongoose.Schema({
         type: String
     },
     pet: {
+        required: true,
+        type: mongoose.Schema.Types.ObjectId
+    },
+    user: {
         required: true,
         type: mongoose.Schema.Types.ObjectId
     },

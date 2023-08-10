@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 const petId = Joi.string().hex().length(24);
 const logId = Joi.string().hex().length(24);
-const tag = Joi.string().alphanum().min(0).max(128);
+const tagId = Joi.string().hex().length(24);
 const date = Joi.date();
 const value = Joi.string().alphanum().min(0).max(128);
 const detail = Joi.string().alphanum().min(0).max(1000);
@@ -10,7 +10,7 @@ const created_at = Joi.string().isoDate();
 
 const createLogSchema = Joi.object({
 	petId: petId.required(),
-	tag: tag.required(),
+	tagId: tagId.required(),
 	date: date.required(),
 	value: value.required(),
 	detail: detail.required()
@@ -18,7 +18,7 @@ const createLogSchema = Joi.object({
 
 const updateLogSchema = Joi.object({
 	petId: petId.required(),
-	tag: tag,
+	tagId: tagId,
 	date: date,
 	value: value,
 	detail: detail
