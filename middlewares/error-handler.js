@@ -9,7 +9,8 @@ function boomErrorHandler(err, req, res, next) {
 
 function errorHandler(err, req, res, next) {
   res.status(500).json({
-    message: err.message,
+    // message: err.message,
+    message: 'Internal server error'
   });
 }
 

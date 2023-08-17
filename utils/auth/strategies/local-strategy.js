@@ -11,13 +11,13 @@ const LocalStrategy = new Strategy(async (username, password, done) => {
 		const user = await service.findByUsername(username);
 
 		if (!user) {
-			done(boom.unauthorized(), false);
+			done(boom.unauthorized('User not found'), false);
 		}
 
 		const isMatch = await bcrypt.compare(password, user.password);
 
 		if (!isMatch) {
-			done(boom.unauthorized(), false);
+			done(boom.unauthorized('Wrong credentials'), false);
 		}
 
 		const { password: passwd, created_at, pets, tags, ...result} = user.toObject();

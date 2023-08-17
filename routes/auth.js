@@ -53,6 +53,7 @@ router.post('/refresh',
             const payload = jwt.verify(refreshToken, config.jwtRefreshSecret);
 
             const token = jwt.sign({ sub: payload.sub, role: payload.role}, config.jwtSecret, { expiresIn: '15m' });
+
             res
               .header('Authorization', token)
               .json(token);

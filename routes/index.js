@@ -1,5 +1,4 @@
 const express = require('express');
-const passport = require('passport');
 const usersRouter = require('./users');
 const petsRouter = require('./pets');
 const tagsRouter = require('./tags');
@@ -7,6 +6,7 @@ const logsRouter = require('./logs');
 const swaggerUi = require('swagger-ui-express')
 const swaggerFile = require('../swagger_output.json')
 const authRouter = require('./auth');
+const { checkJWT } = require('./../middlewares/jwt-handler');
 const { checkRoles } = require('./../middlewares/auth-handler');
 
 function routerApi(app) {
@@ -18,18 +18,18 @@ function routerApi(app) {
 	router.use('/users', 
 				usersRouter
 	);
-	router.use('/users/me/pets', 
-				passport.authenticate('jwt', { session: false }), 
+	router.use('/users/me/pets',
+				checkJWT,
 				checkRoles('admin', 'user'),
 				petsRouter
 	);
 	router.use('/users/me/tags', 
-				passport.authenticate('jwt', { session: false }), 
+				checkJWT, 
 				checkRoles('admin', 'user'),
 				tagsRouter
 	);
 	router.use('/users/me/pets/:petId/logs', 
-				passport.authenticate('jwt', { session: false }), 
+				checkJWT, 
 				checkRoles('admin', 'user'),
 				logsRouter
 	);

@@ -9,7 +9,7 @@ function checkApiKey(req, res, next) {
 		next();
 	} 
 	else {
-		next(boom.unauthorized());
+		next(boom.unauthorized('Invalid API key'));
 	}
 }
 
@@ -21,7 +21,7 @@ function checkRoles(...roles) {
 			next();
 		}
 		else {
-			next(boom.forbidden());
+			next(boom.forbidden('Permission denied'));
 		}
 	}
 }
@@ -31,7 +31,7 @@ function checkRefreshCookie(req, res, next) {
 		next();
 	}
 	else {
-		next(boom.forbidden());
+		next(boom.forbidden('Refresh token not found'));
 	}
 }
 

@@ -1,10 +1,10 @@
 const express = require('express');
-const passport = require('passport');
 const boom = require('@hapi/boom');
 const UsersService = require('./../services/user');
 
 const validatorHandler = require('./../middlewares/validation-handler');
 const { asyncHandler, verifyPassword } = require('./../middlewares/password-handler');
+const { checkJWT } = require('./../middlewares/jwt-handler');
 const { checkRoles } = require('./../middlewares/auth-handler');
 const { createUserSchema, updateUserSchema } = require('./../schemas/user');
 
@@ -12,7 +12,7 @@ const router = express.Router();
 const service = new UsersService();
 
 router.get('/', 
-    passport.authenticate('jwt', { session: false }), 
+    checkJWT,
     checkRoles('admin'),
     async (req, res, next) => {
     // #swagger.tags = ['Users']
@@ -31,7 +31,7 @@ router.get('/',
 });
 
 router.get('/me', 
-    passport.authenticate('jwt', { session: false }), 
+    checkJWT,
     checkRoles('admin', 'user'),
     async (req, res, next) => {
     // #swagger.tags = ['Users']
@@ -69,7 +69,7 @@ router.post('/',
 });
 
 router.patch('/me', 
-    passport.authenticate('jwt', { session: false }), 
+    checkJWT,
     checkRoles('admin', 'user'),
     asyncHandler(verifyPassword),
     validatorHandler(updateUserSchema, 'body'),
@@ -98,7 +98,7 @@ router.patch('/me',
 });
 
 router.delete('/me', 
-    passport.authenticate('jwt', { session: false }), 
+    checkJWT,
     checkRoles('admin', 'user'),
     async (req, res, next) => {
     // #swagger.tags = ['Users']
