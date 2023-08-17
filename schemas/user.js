@@ -13,6 +13,13 @@ const createUserSchema = Joi.object({
 	role: role.required()
 });
 
+const registerUserSchema = Joi.object({
+	email: email.required(),
+	username: username.required(),
+	password: password.required(),
+	repeatPassword: password.required(),
+});
+
 const updateUserSchema = Joi.object({
 	email: email,
 	username: username,
@@ -22,4 +29,4 @@ const updateUserSchema = Joi.object({
 	role: role
 });
 
-module.exports = { createUserSchema, updateUserSchema };
+module.exports = { createUserSchema, updateUserSchema, registerUserSchema };

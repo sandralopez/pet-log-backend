@@ -8,6 +8,12 @@ class UsersService {
 	async create(data) {
 		const hash = await bcrypt.hash(data.password, 10);
 
+		const userExists = await Model.findOne({ username: data.username });
+
+        if (userExists) {
+        	throw boom.conflict('User already exists');
+        }
+
 	    const newUser = new Model({
 	        ...data,
 	        password: hash,
@@ -77,6 +83,29 @@ class UsersService {
         }
 
         return result;
+	}
+
+	async register(data) {
+		const hash = await bcrypt.hash(data.password, 10);
+
+		const userExists = await Model.findOne({ username: data.username });
+
+        if (userExists) {
+        	throw boom.conflict('User already exists');
+        }
+
+	    const newUser = new Model({
+	        ...data,
+	        password: hash,
+	        role: "user",
+	        created_at: new Date()
+	    });
+
+	    const user = await newUser.save();
+		const result = user.toObject();
+		delete result.password;
+
+	    return result;
 	}
 }
 

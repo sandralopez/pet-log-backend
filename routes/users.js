@@ -6,7 +6,7 @@ const validatorHandler = require('./../middlewares/validation-handler');
 const { asyncHandler, verifyPassword } = require('./../middlewares/password-handler');
 const { checkJWT } = require('./../middlewares/jwt-handler');
 const { checkRoles } = require('./../middlewares/auth-handler');
-const { createUserSchema, updateUserSchema } = require('./../schemas/user');
+const { createUserSchema, updateUserSchema, registerUserSchema } = require('./../schemas/user');
 
 const router = express.Router();
 const service = new UsersService();
@@ -117,5 +117,27 @@ router.delete('/me',
         next(error);
     }
 });
+
+router.post('/register', 
+    validatorHandler(registerUserSchema, 'body'),
+    async (req, res, next) => {
+    // #swagger.tags = ['Users']
+    // #swagger.summary = 'Register a new user'
+    try {
+        const data = req.body;
+
+        if (data.repeatPassword && data.password && data.repeatPassword != data.password) {
+            throw boom.badRequest('Passwords do not match');
+        }
+
+        const result = await service.register(data);
+
+        res.status(200).json(result);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+
 
 module.exports = router;
