@@ -18,16 +18,38 @@ router.get('/',
     try {
         const { petId } = req.params;
 
-        const { tag } = req.query;
+        const { tag, page, size } = req.query;
 
         const user = req.user;
 
-        const result = await service.find(user.sub, petId);
-        
+        const index = page ? parseInt(page) : 1;
+        const limit = size ? parseInt(size) : 10;
+
+        const startIndex = (index - 1) * limit;
+
+        const pagination = {
+            limit: limit,
+            startIndex : startIndex,
+        }
+
+        const result = await service.find(user.sub, petId, pagination);
+        const totalCount = await service.count(user.sub, petId);
+        const pageCount = Math.ceil(totalCount/pagination.limit);
+
         if (tag) {
-            res.status(200).json(result.filter((log) => log.tagId.toString() === tag));
+            const filteredResult = result.filter((log) => log.tagId.toString() === tag);
+
+            res.status(200).json({
+                rows : filteredResult,
+                totalCount: totalCount,
+                pageCount: pageCount
+            });
         } else {
-            res.status(200).json(result);
+            res.status(200).json({
+                rows : result,
+                totalCount: totalCount,
+                pageCount: pageCount
+            });
         }
     }
     catch (error) {

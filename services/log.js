@@ -32,7 +32,7 @@ class LogsService {
 	    return result;
 	}
 
-	async find(userId, petId) {
+	async find(userId, petId, pagination) {
 	    const user = await User.findById(userId);
 
 	    if (!user) {
@@ -49,7 +49,8 @@ class LogsService {
 											{ 
 												$match: { 
 													pet: 
-														new mongoose.Types.ObjectId(petId), user:  
+														new mongoose.Types.ObjectId(petId), 
+													user:  
 														new mongoose.Types.ObjectId(userId)
 												} 
 											},
@@ -89,7 +90,10 @@ class LogsService {
 										            tagName: "$tag.name",
 										        }
 										    }
-						]);
+						])
+						.sort({ date: 'desc', created_at: 'desc' })
+						.skip(pagination.startIndex)
+						.limit(pagination.limit);
 
 		return results;
 	}
@@ -162,6 +166,24 @@ class LogsService {
         }
 
         return result;
+	}
+
+	async count(userId, petId) {
+	    const user = await User.findById(userId);
+
+	    if (!user) {
+	      throw boom.notFound('User not found');
+	    }
+
+	    const pet = user.pets.id(petId);
+
+	    if (!pet) {
+	    	throw boom.notFound('Pet not found');
+	    }
+
+	    const result = await Model.count({ pet: petId, user: userId });
+
+	    return result;
 	}
 }
 
