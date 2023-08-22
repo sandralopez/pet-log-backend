@@ -32,25 +32,15 @@ router.get('/',
             startIndex : startIndex,
         }
 
-        const result = await service.find(user.sub, petId, pagination);
-        const totalCount = await service.count(user.sub, petId);
+        const result = await service.find(user.sub, petId, tag, pagination);
+        const totalCount = await service.count(user.sub, petId, tag);
         const pageCount = Math.ceil(totalCount/pagination.limit);
 
-        if (tag) {
-            const filteredResult = result.filter((log) => log.tagId.toString() === tag);
-
-            res.status(200).json({
-                rows : filteredResult,
-                totalCount: totalCount,
-                pageCount: pageCount
-            });
-        } else {
-            res.status(200).json({
-                rows : result,
-                totalCount: totalCount,
-                pageCount: pageCount
-            });
-        }
+        res.status(200).json({
+            rows : result,
+            totalCount: totalCount,
+            pageCount: pageCount
+        });
     }
     catch (error) {
         next(error);

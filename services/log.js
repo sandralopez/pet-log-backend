@@ -32,7 +32,7 @@ class LogsService {
 	    return result;
 	}
 
-	async find(userId, petId, pagination) {
+	async find(userId, petId, tagId, pagination) {
 	    const user = await User.findById(userId);
 
 	    if (!user) {
@@ -45,7 +45,10 @@ class LogsService {
 	    	throw boom.notFound('Pet not found');
 	    }
 
+	    const filterTag = (tagId) ? [{ $match: { tag: new mongoose.Types.ObjectId(tagId) } }] : [];
+
 		const results = await Model.aggregate([
+											...filterTag,
 											{ 
 												$match: { 
 													pet: 
@@ -168,7 +171,7 @@ class LogsService {
         return result;
 	}
 
-	async count(userId, petId) {
+	async count(userId, petId, tagId) {
 	    const user = await User.findById(userId);
 
 	    if (!user) {
@@ -181,7 +184,16 @@ class LogsService {
 	    	throw boom.notFound('Pet not found');
 	    }
 
-	    const result = await Model.count({ pet: petId, user: userId });
+	    const conditions = {
+	    	pet: petId,
+	    	user: userId
+	    }
+
+	    if (tagId) {
+	    	conditions.tag = tagId
+	    }
+
+	    const result = await Model.count(conditions);
 
 	    return result;
 	}
