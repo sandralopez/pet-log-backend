@@ -35,6 +35,7 @@ function routerApi(app) {
 				logsRouter
 	);
 	router.use('/comments', 
+				checkJWT,
 				commentsRouter
 	);
 	router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))

@@ -11,7 +11,6 @@ const { checkJWT } = require('./../middlewares/jwt-handler');
 const { checkRoles } = require('./../middlewares/auth-handler');
 
 router.get('/', 
-    checkJWT,
     checkRoles('admin'),
     async (req, res, next) => {
     // #swagger.tags = ['Comments']
@@ -20,7 +19,9 @@ router.get('/',
                "bearerAuth": []
     }] */
     try {
-        const result = await service.find();
+        const user = req.user;
+
+        const result = await service.find(user.sub);
 
         res.status(200).json(result);
     }
@@ -30,7 +31,6 @@ router.get('/',
 });
 
 router.get('/:commentId', 
-    checkJWT,
     checkRoles('admin'),
     validatorHandler(getCommentSchema, 'params'),
     async (req, res, next) => {
@@ -42,7 +42,9 @@ router.get('/:commentId',
     try {
         const { commentId } = req.params;
 
-        result = await service.findOne(commentId);
+        const user = req.user;
+
+        result = await service.findOne(user.sub, commentId);
 
         res.status(200).json(result);
     }
@@ -52,6 +54,7 @@ router.get('/:commentId',
 });
 
 router.post('/', 
+    checkRoles('admin', 'user'),
     validatorHandler(createCommentSchema, 'body'),
     async (req, res, next) => {
     // #swagger.tags = ['Comments']
@@ -62,7 +65,9 @@ router.post('/',
     try {
         const data = req.body;
 
-        const result = await service.create(data);
+        const user = req.user;
+
+        const result = await service.create(user.sub, data);
 
         res.status(200).json(result);
     }

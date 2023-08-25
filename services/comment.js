@@ -1,13 +1,21 @@
 const Model = require('../models/comment');
+const User = require('../models/user');
 const boom = require('@hapi/boom');
 const bcrypt = require('bcrypt');
 
 class CommentsService {
 	consctructor() { }
 
-	async create(data) {
+	async create(userId, data) {
+	    const user = await User.findById(userId);
+
+	    if (!user) {
+	      throw boom.notFound('User not found');
+	    }
+	    
 	    const newComment = new Model({
 	        ...data,
+	        user: userId,
 	        created_at: new Date()
 	    });
 
@@ -16,13 +24,25 @@ class CommentsService {
 	    return result;
 	}
 
-	async find() {
+	async find(userId) {
+	    const user = await User.findById(userId);
+
+	    if (!user) {
+	      throw boom.notFound('User not found');
+	    }
+
 		const results = await Model.find();
 
 		return results;
 	}
 
-	async findOne(commentId) {
+	async findOne(userId, commentId) {
+	    const user = await User.findById(userId);
+
+	    if (!user) {
+	      throw boom.notFound('User not found');
+	    }
+
 		const result = await Model.findById(commentId);
 
         if (!result) {
