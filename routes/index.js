@@ -3,6 +3,7 @@ const usersRouter = require('./users');
 const petsRouter = require('./pets');
 const tagsRouter = require('./tags');
 const logsRouter = require('./logs');
+const commentsRouter = require('./comments');
 const swaggerUi = require('swagger-ui-express')
 const swaggerFile = require('../swagger_output.json')
 const authRouter = require('./auth');
@@ -32,6 +33,9 @@ function routerApi(app) {
 				checkJWT, 
 				checkRoles('admin', 'user'),
 				logsRouter
+	);
+	router.use('/comments', 
+				commentsRouter
 	);
 	router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 }
