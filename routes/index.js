@@ -4,6 +4,7 @@ const petsRouter = require('./pets');
 const tagsRouter = require('./tags');
 const logsRouter = require('./logs');
 const commentsRouter = require('./comments');
+const remindersRouter = require('./reminders');
 const swaggerUi = require('swagger-ui-express')
 const swaggerFile = require('../swagger_output.json')
 const authRouter = require('./auth');
@@ -33,6 +34,11 @@ function routerApi(app) {
 				checkJWT, 
 				checkRoles('admin', 'user'),
 				logsRouter
+	);
+	router.use('/users/me/pets/:petId/reminders', 
+				checkJWT, 
+				checkRoles('admin', 'user'),
+				remindersRouter
 	);
 	router.use('/comments', 
 				checkJWT,

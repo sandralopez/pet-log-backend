@@ -4,7 +4,6 @@ const PetsService = require('./../services/pet');
 const validatorHandler = require('./../middlewares/validation-handler');
 const { createPetSchema, updatePetSchema, getPetSchema } = require('./../schemas/pet');
 
-const Model = require('../models/user');
 const service = new PetsService();
 
 const router = express.Router({mergeParams: true});
@@ -19,6 +18,24 @@ router.get('/', async (req, res, next) => {
     	const user = req.user;
     	
         const result = await service.find(user.sub);
+
+        res.status(200).json(result);
+    }
+    catch(error){
+        next(error);
+    }
+});
+
+router.get('/reminders', async (req, res, next) => {
+    // #swagger.tags = ['Pets']
+    // #swagger.summary = Get a list of reminders from all user's pets
+    /* #swagger.security = [{
+               "bearerAuth": []
+    }] */
+    try{
+        const user = req.user;
+
+        const result = await service.findAllPetsReminders(user.sub);
 
         res.status(200).json(result);
     }

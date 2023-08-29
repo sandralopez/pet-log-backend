@@ -1,5 +1,28 @@
 const mongoose = require('mongoose');
 
+const ReminderSchema = new mongoose.Schema({
+    id: {
+        required: false,
+        type: mongoose.Schema.Types.ObjectId
+    },
+    date: {
+        required: true,
+        type: Date
+    },
+    subject: {
+        required: true,
+        type: String
+    },
+    detail: {
+        required: false,
+        type: String
+    },
+    created_at: {
+        required: true,
+        type: Date
+    }
+})
+
 const PetSchema = new mongoose.Schema({
     id: {
         required: false,
@@ -21,6 +44,7 @@ const PetSchema = new mongoose.Schema({
         required: false,
         type: String
     },
+    reminders: [ReminderSchema],
     created_at: {
         required: true,
         type: Date

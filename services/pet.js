@@ -86,6 +86,30 @@ class PetsService {
 
 	    return pet;
 	}
+
+	async findAllPetsReminders(userId) {
+    	const user = await Model.findById(userId);
+
+	    if (!user) {
+	      throw boom.notFound('User not found');
+	    }
+
+	    if (!user.pets) {
+	    	throw boom.notFound('User without pets');
+	    }
+
+		const reminders = {
+			current: [],
+			past: []
+		};
+
+		const currentDate = new Date();
+
+		user.pets?.map(pet => pet.reminders?.map(reminder => reminder.date.getTime() > currentDate.getTime() ? reminders.current.push(reminder) : reminders.past.push(reminder)));
+
+        return reminders;
+	}
+
 }
 
 module.exports = PetsService;
