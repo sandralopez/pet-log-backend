@@ -26,7 +26,13 @@ class RemindersService {
 
 	    await user.save();
 
-	    return pet.reminders[pet.reminders.length - 1];
+	    const reminder = {
+	    	...pet.reminders[pet.reminders.length - 1].toObject(),
+	    	petId: pet._id,
+	    	petName: pet.name
+	    }
+
+	    return reminder;
 	}
 
 	async find(userId, petId) {
@@ -89,6 +95,9 @@ class RemindersService {
 	    reminder.set(data);
 	    
 	    user.save();
+
+	    reminder.petId = pet._id;
+	    reminder.petName = pet.name;
 
 	    return reminder;
 	}

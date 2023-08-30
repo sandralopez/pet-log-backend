@@ -105,7 +105,16 @@ class PetsService {
 
 		const currentDate = new Date();
 
-		user.pets?.map(pet => pet.reminders?.map(reminder => reminder.date.getTime() > currentDate.getTime() ? reminders.current.push(reminder) : reminders.past.push(reminder)));
+		user.pets?.map(pet => 
+						pet.reminders?.map(reminder =>  {
+							const remainderObject = reminder.toObject();
+
+							reminder.date > currentDate
+								? reminders.current.push({...remainderObject, petId: pet._id, petName: pet.name}) 
+								: reminders.past.push({...remainderObject, petId: pet._id, petName: pet.name});
+
+						}
+					));
 
         return reminders;
 	}
