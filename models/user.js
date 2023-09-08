@@ -17,6 +17,14 @@ const ReminderSchema = new mongoose.Schema({
         required: false,
         type: String
     },
+    oneWeekNotified: {
+        required: false,
+        type: Boolean
+    },
+    threeDaysNotified: {
+        required: false,
+        type: Boolean
+    },
     created_at: {
         required: true,
         type: Date

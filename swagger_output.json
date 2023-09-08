@@ -171,6 +171,25 @@
         }
       }
     },
+    "/api/v1/users/me/notifications": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get a notification list of upcoming reminders from users' pets",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/api/v1/users/me/pets/": {
       "get": {
         "tags": [

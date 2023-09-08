@@ -107,6 +107,42 @@ class UsersService {
 
 	    return result;
 	}
+
+	async findNotifications(userId) {
+    	const user = await Model.findById(userId);
+
+	    if (!user) {
+	      throw boom.notFound('User not found');
+	    }
+
+	    if (!user.pets) {
+	    	throw boom.notFound('User without pets');
+	    }
+
+		const notifications = {
+			threeDays: [],
+			oneWeek: []
+		};
+
+		const currentDate = new Date();
+		const inThreeDays = new Date(new Date(currentDate).setDate(currentDate.getDate() + 3));
+		const inOneWeek = new Date(new Date(currentDate).setDate(currentDate.getDate() + 7));
+
+		user.pets?.map(pet => 
+						pet.reminders?.map(reminder =>  {
+							const remainderObject = reminder.toObject();
+
+							if (reminder.date >= currentDate && reminder.date <= inThreeDays) {
+								notifications.threeDays.push({...remainderObject, petName: pet.name});
+							}
+							else if (reminder.date >= currentDate && reminder.date <= inOneWeek) {
+								notifications.oneWeek.push({...remainderObject, petName: pet.name});
+							}
+						}
+					));
+
+        return notifications;
+	}
 }
 
 module.exports = UsersService;

@@ -7,6 +7,8 @@ class RemindersService {
 	async create(userId, petId, data) {
 	    const newReminder = {
 	        ...data,
+	        oneWeekNotified: false,
+	        threeDaysNotified: false,
 	        created_at: new Date()
 	    };
 

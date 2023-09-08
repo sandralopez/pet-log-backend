@@ -139,5 +139,25 @@ router.post('/register',
     }
 });
 
+router.get('/me/notifications', 
+    checkJWT,
+    checkRoles('admin', 'user'),
+    async (req, res, next) => {
+    // #swagger.tags = ['Users']
+    // #swagger.summary = Get a notification list of upcoming reminders from users' pets
+    /* #swagger.security = [{
+               "bearerAuth": []
+    }] */
+    try{
+        const user = req.user;
+
+        const result = await service.findNotifications(user.sub);
+
+        res.status(200).json(result);
+    }
+    catch(error){
+        next(error);
+    }
+});
 
 module.exports = router;
