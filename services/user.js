@@ -143,6 +143,48 @@ class UsersService {
 
         return notifications;
 	}
+
+	async updateNotifications(userId) {
+	    const user = await Model.findById(userId);
+
+	    if (!user) {
+	      	throw boom.notFound('User not found');
+	    }
+
+		const notifications = {
+			threeDays: [],
+			oneWeek: []
+		};
+
+		const currentDate = new Date();
+		const inThreeDays = new Date(new Date(currentDate).setDate(currentDate.getDate() + 3));
+		const inOneWeek = new Date(new Date(currentDate).setDate(currentDate.getDate() + 7));
+
+		user.pets?.map(pet => 
+						pet.reminders?.map(reminder =>  {
+							const remainderObject = reminder.toObject();
+
+							if (reminder.date >= currentDate && reminder.date <= inThreeDays) {
+								if (!reminder.threeDaysNotified) {
+									reminder.set({ threeDaysNotified: true });
+								}
+
+								notifications.threeDays.push({...remainderObject, petName: pet.name});
+							} 
+							else if (reminder.date >= currentDate && reminder.date <= inOneWeek) {
+								if (!reminder.oneWeekNotified) {
+									reminder.set({ oneWeekNotified: true });
+								}
+
+								notifications.oneWeek.push({...remainderObject, petName: pet.name});
+							}
+						}
+					));
+
+	    user.save();
+
+	    return notifications;
+	}
 }
 
 module.exports = UsersService;

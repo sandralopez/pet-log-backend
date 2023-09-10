@@ -160,4 +160,25 @@ router.get('/me/notifications',
     }
 });
 
+router.patch('/me/notifications', 
+    checkJWT,
+    checkRoles('admin', 'user'),
+    async (req, res, next) => {
+    // #swagger.tags = ['Users']
+    // #swagger.summary = Update notifications list of upcoming reminders from users' pets when read
+    /* #swagger.security = [{
+               "bearerAuth": []
+    }] */
+    try{
+        const user = req.user;
+
+        const result = await service.updateNotifications(user.sub);
+
+        res.status(200).json(result);
+    }
+    catch(error){
+        next(error);
+    }
+});
+
 module.exports = router;
