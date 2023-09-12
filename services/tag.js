@@ -16,6 +16,12 @@ class TagsService {
 	      throw boom.notFound('User not found');
 	    }
 
+		const tagExists = user.tags?.find(({ name }) => name === data.name );
+
+        if (tagExists) {
+        	throw boom.conflict('Tag already exists');
+        }
+
 	    user.tags.push(newTag);
 
 	    await user.save();
