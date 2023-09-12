@@ -10,8 +10,8 @@ const created_at = Joi.string().isoDate();
 const createTagSchema = Joi.object({
 	name: name.required(),
 	datatype: datatype.required(),
-	measureUnit: measureUnit,
-	timeUnit: timeUnit
+	measureUnit: measureUnit.optional().allow(''),
+	timeUnit: timeUnit.optional().allow('')
 });
 
 const updateTagSchema = Joi.object({
