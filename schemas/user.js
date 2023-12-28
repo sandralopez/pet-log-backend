@@ -5,6 +5,7 @@ const username = Joi.string().alphanum().min(3).max(128);
 const password = Joi.string().alphanum().min(3).max(128);
 const role = Joi.string().alphanum().min(3).max(128);
 const created_at = Joi.string().isoDate();
+const deleted = Joi.boolean();
 
 const createUserSchema = Joi.object({
 	email: email.required(),

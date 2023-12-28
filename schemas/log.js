@@ -7,6 +7,7 @@ const date = Joi.date();
 const value = Joi.string().alphanum().min(0).max(128);
 const detail = Joi.string().alphanum().min(0).max(1000);
 const created_at = Joi.string().isoDate();
+const deleted = Joi.boolean();
 
 const createLogSchema = Joi.object({
 	petId: petId.required(),

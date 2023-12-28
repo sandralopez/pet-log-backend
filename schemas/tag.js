@@ -6,6 +6,7 @@ const datatype = Joi.string().regex(/^[A-Za-z]+$/).min(3).max(128);
 const measureUnit = Joi.string().alphanum().min(1).max(128);
 const timeUnit = Joi.string().alphanum().min(3).max(128);
 const created_at = Joi.string().isoDate();
+const deleted = Joi.boolean();
 
 const createTagSchema = Joi.object({
 	name: name.required(),

@@ -25,6 +25,10 @@ const ReminderSchema = new mongoose.Schema({
         required: false,
         type: Boolean
     },
+    deleted: {
+        default: false,
+        type: Boolean
+    },
     created_at: {
         required: true,
         type: Date
@@ -53,6 +57,10 @@ const PetSchema = new mongoose.Schema({
         type: String
     },
     reminders: [ReminderSchema],
+    deleted: {
+        default: false,
+        type: Boolean
+    },
     created_at: {
         required: true,
         type: Date
@@ -79,6 +87,10 @@ const TagSchema = new mongoose.Schema({
     timeUnit: {
         required: false,
         type: String
+    },
+    deleted: {
+        default: false,
+        type: Boolean
     },
     created_at: {
         required: true,
@@ -109,6 +121,10 @@ const UserSchema = new mongoose.Schema({
     },
     pets: [PetSchema],
     tags: [TagSchema],
+    deleted: {
+        default: false,
+        type: Boolean
+    },
     created_at: {
         required: true,
         type: Date

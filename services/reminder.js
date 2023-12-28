@@ -12,13 +12,13 @@ class RemindersService {
 	        created_at: new Date()
 	    };
 
-	    const user = await Model.findById(userId);
+	    const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-	    const pet = user.pets.id(petId);
+	    const pet = user.pets.find(pet => pet._id.equals(petId) && pet.deleted === false);
 
 	    if (!pet) {
 	    	throw boom.notFound('Pet not found');
@@ -38,35 +38,35 @@ class RemindersService {
 	}
 
 	async find(userId, petId) {
-    	const user = await Model.findById(userId);
+    	const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-	    const pet = user.pets.id(petId);
+	    const pet = user.pets.find(pet => pet._id.equals(petId) && pet.deleted === false);
 
 	    if (!pet) {
 	    	throw boom.notFound('Pet not found');
 	    }
 
-        return pet.reminders;
+	    return pet.reminders.filter( reminder => reminder.deleted === false );
 	}
 
 	async findOne(userId, petId, reminderId) {
-	    const user = await Model.findById(userId);
+	    const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-	    const pet = user.pets.id(petId);
+	    const pet = user.pets.find(pet => pet._id.equals(petId) && pet.deleted === false);
 
 	    if (!pet) {
 	    	throw boom.notFound('Pet not found');
 	    }
 
-	    const reminder = pet.reminders.id(reminderId);
+	    const reminder = pet.reminders.find(reminder => reminder._id.equals(reminderId) && reminder.deleted === false);
 
 	    if (!reminder) {
 	    	throw boom.notFound('Reminder not found');
@@ -76,19 +76,19 @@ class RemindersService {
 	}
 
 	async update(userId, petId, reminderId, data) {
-	    const user = await Model.findById(userId);
+	    const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      	throw boom.notFound('User not found');
 	    }
 
-	    const pet = user.pets.id(petId);
+	    const pet = user.pets.find(pet => pet._id.equals(petId) && pet.deleted === false);
 
 	    if (!pet) {
 	    	throw boom.notFound('Pet not found');
 	    }
 
-	    const reminder = pet.reminders.id(reminderId);
+	    const reminder = pet.reminders.find(reminder => reminder._id(reminderId) && reminder.deleted === false);
 
 	    if (!reminder) {
 	    	throw boom.notFound('Reminder not found');
@@ -105,25 +105,25 @@ class RemindersService {
 	}
 
 	async delete(userId, petId, reminderId) {
-    	const user = await Model.findById(userId);
+    	const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      	throw boom.notFound('User not found');
 	    }
 
-	    const pet = user.pets.id(petId);
+	    const pet = user.pets.find(pet => pet._id.equals(petId) && pet.deleted === false);
 
 	    if (!pet) {
 	    	throw boom.notFound('Pet not found');
 	    }
 
-	    const reminder = pet.reminders.id(reminderId);
+	    const reminder = pet.reminders.find(reminder => reminder._id.equals(reminderId) && reminder.deleted === false);
 
 	    if(!reminder) {
 	    	throw boom.notFound('Reminder not found');
 	    }
 
-	    pet.reminders.pull(reminderId);
+	    reminder.set({ deleted: true });
 
 	    await user.save();
 

@@ -8,7 +8,7 @@ class UsersService {
 	async create(data) {
 		const hash = await bcrypt.hash(data.password, 10);
 
-		const userExists = await Model.findOne({ username: data.username });
+		const userExists = await Model.findOne({ username: data.username, deleted: false });
 
         if (userExists) {
         	throw boom.conflict('User already exists');
@@ -34,13 +34,13 @@ class UsersService {
 	}
 
 	async findByUsername(username) {
-		const result = await Model.findOne({ username: username }, '_id email username role created_at password');
+		const result = await Model.findOne({ username: username, deleted: false }, '_id email username role created_at password');
 
 		return result;
 	}
 
 	async findOne(userId) {
-		const result = await Model.findById(userId, '_id email username role created_at');
+		const result = await Model.findById({ _id: userId, deleted: false }, '_id email username role created_at');
 
         if (!result) {
         	throw boom.notFound('User not found');
@@ -53,16 +53,16 @@ class UsersService {
         const options = { new: true, select: '_id email username role created_at' };
 
         if (data.email) {
-	        const result = await Model.findByIdAndUpdate(
-	            userId, { email: data.email }, options
+	        const result = await Model.findOneAndUpdate(
+	            { _id: userId, deleted: false }, { email: data.email }, options
 	        )
         }
 
         if (data.newPassword) {
         	const hash = await bcrypt.hash(data.newPassword, 10);
 
-	        const result = await Model.findByIdAndUpdate(
-	            userId, { password: hash }, options
+	        const result = await Model.findOneAndUpdate(
+	            { _id: userId, deleted: false }, { password: hash }, options
 	        )
         }
 
@@ -76,7 +76,7 @@ class UsersService {
 	async delete(userId) {
 		const options = { select: '_id email username role created_at' };
 
-        const result = await Model.findByIdAndDelete(userId, options);
+        const result = await Model.findOneAndUpdate({ _id: userId, deleted: false }, { deleted: true }, options);
 
         if (!result) {
         	throw boom.notFound('User not found');
@@ -88,7 +88,7 @@ class UsersService {
 	async register(data) {
 		const hash = await bcrypt.hash(data.password, 10);
 
-		const userExists = await Model.findOne({ username: data.username });
+		const userExists = await Model.findOne({ username: data.username, deleted: false });
 
         if (userExists) {
         	throw boom.conflict('User already exists');
@@ -109,7 +109,7 @@ class UsersService {
 	}
 
 	async findNotifications(userId) {
-    	const user = await Model.findById(userId);
+    	const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
@@ -145,7 +145,7 @@ class UsersService {
 	}
 
 	async updateNotifications(userId) {
-	    const user = await Model.findById(userId);
+	    const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      	throw boom.notFound('User not found');

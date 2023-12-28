@@ -10,13 +10,13 @@ class TagsService {
 	        created_at: new Date()
 	    };
 
-	    const user = await Model.findById(userId);
+	    const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-		const tagExists = user.tags?.find(({ name }) => name === data.name );
+		const tagExists = user.tags?.find(({ name, deleted }) => { name === data.name; deleted: false });
 
         if (tagExists) {
         	throw boom.conflict('Tag already exists');
@@ -30,23 +30,23 @@ class TagsService {
 	}
 
 	async find(userId) {
-    	const user = await Model.findById(userId);
+    	const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-        return user.tags;
+	    return user.tags.filter( tag => tag.deleted === false );
 	}
 
 	async findOne(userId, tagId) {
-	    const user = await Model.findById(userId);
+	    const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-	    const tag = user.tags.id(tagId);
+	    const tag = user.tags.find(tag => tag._id.equals(tagId) && tag.deleted === false);
 
 	    if (!tag) {
 	    	throw boom.notFound('Tag not found');
@@ -56,13 +56,13 @@ class TagsService {
 	}
 
 	async update(userId, tagId, data) {
-	    const user = await Model.findById(userId);
+	    const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      	throw boom.notFound('User not found');
 	    }
 
-	    const tag = user.tags.id(tagId);
+	    const tag = user.tags.find(tag => tag._id.equals(tagId) && tag.deleted === false);
 
 	    if (!tag) {
 	    	throw boom.notFound('Tag not found');
@@ -75,19 +75,20 @@ class TagsService {
 	}
 
 	async delete(userId, tagId) {
-    	const user = await Model.findById(userId);
+    	const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      	throw boom.notFound('User not found');
 	    }
 
-	    const tag = user.tags.id(tagId);
+	    const tag = user.tags.find(tag => tag._id.equals(tagId) && tag.deleted === false);
 
 	    if(!tag) {
 	    	throw boom.notFound('Tag not found');
 	    }
 
-	    user.tags.pull(tagId);
+	    tag.set({ deleted: true });
+	    
 	    await user.save();
 
 	    return tag;

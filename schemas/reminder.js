@@ -8,6 +8,7 @@ const date = Joi.date();
 const oneWeekNotified = Joi.boolean();
 const threeDaysNotified = Joi.boolean();
 const created_at = Joi.string().isoDate();
+const deleted = Joi.boolean();
 
 const createReminderSchema = Joi.object({
 	petId: petId.required(),

@@ -7,13 +7,13 @@ class LogsService {
 	consctructor() { }
 
 	async create(userId, petId, data) {
-	    const user = await User.findById(userId);
+	    const user = await User.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-	    const pet = user.pets.id(petId);
+	    const pet = user.pets.find(pet => pet._id.equals(petId) && pet.deleted === false);
 
 	    if (!pet) {
 	    	throw boom.notFound('Pet not found');
@@ -33,13 +33,13 @@ class LogsService {
 	}
 
 	async find(userId, petId, tagId, pagination) {
-	    const user = await User.findById(userId);
+	    const user = await User.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-	    const pet = user.pets.id(petId);
+	    const pet = user.pets.find(pet => pet._id.equals(petId) && pet.deleted === false);
 
 	    if (!pet) {
 	    	throw boom.notFound('Pet not found');
@@ -54,7 +54,9 @@ class LogsService {
 													pet: 
 														new mongoose.Types.ObjectId(petId), 
 													user:  
-														new mongoose.Types.ObjectId(userId)
+														new mongoose.Types.ObjectId(userId),
+													deleted:
+														false
 												} 
 											},
 										    {
@@ -102,19 +104,19 @@ class LogsService {
 	}
 
 	async findOne(userId, petId, logId) {
-	    const user = await User.findById(userId);
+	    const user = await User.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-	    const pet = user.pets.id(petId);
+	    const pet = user.pets.find(pet => pet._id.equals(petId) && pet.deleted === false);
 
 	    if (!pet) {
 	    	throw boom.notFound('Pet not found');
 	    }
 
-		const result = await Model.findById(logId);
+		const result = await Model.findOne({ _id: logId, deleted: false });
 
         if (!result) {
         	throw boom.notFound('Log not found');
@@ -124,13 +126,13 @@ class LogsService {
 	}
 
 	async update(userId, petId, logId, data) {
-	    const user = await User.findById(userId);
+	    const user = await User.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-	    const pet = user.pets.id(petId);
+	    const pet = user.pets.find(pet => pet._id.equals(petId) && pet.deleted === false);
 
 	    if (!pet) {
 	    	throw boom.notFound('Pet not found');
@@ -138,9 +140,9 @@ class LogsService {
 
         const options = { new: true };
 
-        const result = await Model.findByIdAndUpdate(
-            logId, data, options
-        )
+        const result = await Model.findOneAndUpdate(
+	            { _id: logId, deleted: false }, options
+	        )
 
         if (!result) {
         	throw boom.notFound('Log not found');
@@ -150,19 +152,21 @@ class LogsService {
 	}
 
 	async delete(userId, petId, logId) {
-	    const user = await User.findById(userId);
+	    const user = await User.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-	    const pet = user.pets.id(petId);
+	    const pet = user.pets.find(pet => pet._id.equals(petId) && pet.deleted === false);
 
 	    if (!pet) {
 	    	throw boom.notFound('Pet not found');
 	    }
 
-        const result = await Model.findByIdAndDelete(logId);
+		const options = { select: '_id tag date value detail pet user created_at' };
+
+        const result = await Model.findOneAndUpdate({ _id: logId, deleted: false }, { deleted: true }, options);
 
         if (!result) {
         	throw boom.notFound('Log not found');
@@ -172,13 +176,13 @@ class LogsService {
 	}
 
 	async count(userId, petId, tagId) {
-	    const user = await User.findById(userId);
+	    const user = await User.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-	    const pet = user.pets.id(petId);
+	    const pet = user.pets.find(pet => pet._id.equals(petId) && pet.deleted === false);
 
 	    if (!pet) {
 	    	throw boom.notFound('Pet not found');
@@ -186,14 +190,15 @@ class LogsService {
 
 	    const conditions = {
 	    	pet: petId,
-	    	user: userId
+	    	user: userId,
+	    	deleted: false
 	    }
 
 	    if (tagId) {
 	    	conditions.tag = tagId
 	    }
 
-	    const result = await Model.count(conditions);
+	    const result = await Model.countDocuments(conditions);
 
 	    return result;
 	}

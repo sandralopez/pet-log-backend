@@ -10,7 +10,7 @@ class PetsService {
 	        created_at: new Date()
 	    };
 
-	    const user = await Model.findById(userId);
+	    const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
@@ -24,23 +24,25 @@ class PetsService {
 	}
 
 	async find(userId) {
-    	const user = await Model.findById(userId);
+    	const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	    	throw boom.notFound('User not found');
 	    }
 
-        return user.pets;
+	    const pets = user.pets.find(pet => pet.deleted === false);
+
+        return pets;
 	}
 
 	async findOne(userId, petId) {
-	    const user = await Model.findById(userId);
+	    const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-	    const pet = user.pets.id(petId);
+	    const pet = user.pets.find(pet => pet._id.equals(petId) && pet.deleted === false);
 
 	    if (!pet) {
 	    	throw boom.notFound('Pet not found');
@@ -50,13 +52,13 @@ class PetsService {
 	}
 
 	async update(userId, petId, data) {
-	    const user = await Model.findById(userId);
+	    const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      	throw boom.notFound('User not found');
 	    }
 
-	    const pet = user.pets.id(petId);
+	    const pet = user.pets.find(pet => pet._id.equals(petId) && pet.deleted === false);
 
 	    if (!pet) {
 	    	throw boom.notFound('Pet not found');
@@ -69,26 +71,27 @@ class PetsService {
 	}
 
 	async delete(userId, petId) {
-    	const user = await Model.findById(userId);
+    	const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      	throw boom.notFound('User not found');
 	    }
 
-	    const pet = user.pets.id(petId);
+	    const pet = user.pets.find(pet => pet._id.equals(petId) && pet.deleted === false);
 
 	    if(!pet) {
 	    	throw boom.notFound('Pet not found');
 	    }
 
-	    user.pets.pull(petId);
+	    pet.set({ deleted : true });
+
 	    await user.save();
 
 	    return pet;
 	}
 
 	async findAllPetsReminders(userId) {
-    	const user = await Model.findById(userId);
+    	const user = await Model.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
@@ -105,20 +108,20 @@ class PetsService {
 
 		const currentDate = new Date();
 
-		user.pets?.map(pet => 
-						pet.reminders?.map(reminder =>  {
-							const remainderObject = reminder.toObject();
+		user.pets?.filter(pet => pet.deleted === false)
+				  .map(pet => 
+						pet.reminders?.filter(reminder => reminder.deleted === false)
+									  .map(reminder =>  {
+											const remainderObject = reminder.toObject();
 
-							reminder.date > currentDate
-								? reminders.current.push({...remainderObject, petId: pet._id, petName: pet.name}) 
-								: reminders.past.push({...remainderObject, petId: pet._id, petName: pet.name});
-
+											reminder.date > currentDate
+												? reminders.current.push({...remainderObject, petId: pet._id, petName: pet.name}) 
+												: reminders.past.push({...remainderObject, petId: pet._id, petName: pet.name});
 						}
 					));
 
         return reminders;
 	}
-
 }
 
 module.exports = PetsService;

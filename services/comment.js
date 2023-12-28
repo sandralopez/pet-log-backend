@@ -7,7 +7,7 @@ class CommentsService {
 	consctructor() { }
 
 	async create(userId, data) {
-	    const user = await User.findById(userId);
+	    const user = await User.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
@@ -25,25 +25,25 @@ class CommentsService {
 	}
 
 	async find(userId) {
-	    const user = await User.findById(userId);
+	    const user = await User.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-		const results = await Model.find();
+		const results = await Model.find({ deleted: false });
 
 		return results;
 	}
 
 	async findOne(userId, commentId) {
-	    const user = await User.findById(userId);
+	    const user = await User.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
 	      throw boom.notFound('User not found');
 	    }
 
-		const result = await Model.findById(commentId);
+		const result = await Model.findOne({ _id: commentId, deleted: false });
 
         if (!result) {
         	throw boom.notFound('Comment not found');
