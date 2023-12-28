@@ -30,7 +30,7 @@ class PetsService {
 	    	throw boom.notFound('User not found');
 	    }
 
-	    const pets = user.pets.find(pet => pet.deleted === false);
+	    const pets = user.pets.filter(pet => pet.deleted === false);
 
         return pets;
 	}
