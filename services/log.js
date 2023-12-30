@@ -32,7 +32,7 @@ class LogsService {
 	    return result;
 	}
 
-	async find(userId, petId, tagId, pagination) {
+	async find(userId, petId, filters, pagination) {
 	    const user = await User.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
@@ -45,10 +45,19 @@ class LogsService {
 	    	throw boom.notFound('Pet not found');
 	    }
 
-	    const filterTag = (tagId) ? [{ $match: { tag: new mongoose.Types.ObjectId(tagId) } }] : [];
+	    const filterTag = (filters.tagId) ? [{ $match: { tag: new mongoose.Types.ObjectId(filters.tagId) } }] : [];
+	    const filterMinDate = (filters.minDate) ? [{ $match: { date: { $gte: new Date(filters.minDate.toLocaleString('es-ES', {
+	    																					timeZone: 'UTC'
+																						})) } } }] : [];
 
+	    const filterMaxDate = (filters.maxDate) ? [{ $match: { date: { $lte: new Date(filters.maxDate.toLocaleString('es-ES', {
+	    																					timeZone: 'UTC'
+																						})) } } }] : [];
+	    
 		const results = await Model.aggregate([
 											...filterTag,
+											...filterMinDate,
+											...filterMaxDate,
 											{ 
 												$match: { 
 													pet: 
@@ -175,7 +184,7 @@ class LogsService {
         return result;
 	}
 
-	async count(userId, petId, tagId) {
+	async count(userId, petId, filters) {
 	    const user = await User.findOne({ _id: userId, deleted: false });
 
 	    if (!user) {
@@ -194,8 +203,20 @@ class LogsService {
 	    	deleted: false
 	    }
 
-	    if (tagId) {
-	    	conditions.tag = tagId
+	    if (filters.tagId) {
+	    	conditions.tag = filters.tagId
+	    }
+
+	    if (filters.minDate) {
+	    	conditions.date = { $gte: new Date(filters.minDate.toLocaleString('es-ES', {
+										    timeZone: 'UTC'
+										})) } 
+	    }
+
+	    if (filters.maxDate) {
+	    	conditions.date = { ...conditions.date, $lte:new Date(filters.maxDate.toLocaleString('es-ES', {
+										    timeZone: 'UTC'
+										})) } 
 	    }
 
 	    const result = await Model.countDocuments(conditions);

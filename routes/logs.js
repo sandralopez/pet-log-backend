@@ -18,7 +18,7 @@ router.get('/',
     try {
         const { petId } = req.params;
 
-        const { tag, page, size } = req.query;
+        const { tag, minDate, maxDate, page, size } = req.query;
 
         const user = req.user;
 
@@ -32,8 +32,14 @@ router.get('/',
             startIndex : startIndex,
         }
 
-        const result = await service.find(user.sub, petId, tag, pagination);
-        const totalCount = await service.count(user.sub, petId, tag);
+        const filters = {
+            tagId: tag,
+            minDate: minDate,
+            maxDate: maxDate
+        };
+
+        const result = await service.find(user.sub, petId, filters, pagination);
+        const totalCount = await service.count(user.sub, petId, filters);
         const pageCount = Math.ceil(totalCount/pagination.limit);
 
         res.status(200).json({
