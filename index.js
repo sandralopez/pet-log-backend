@@ -4,6 +4,9 @@ const express = require('express');
 const routerApi = require('./routes');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const helmet = require("helmet");
+const RateLimit = require("express-rate-limit");
+
 const conn = process.env.DATABASE_URL;
 
 const { checkApiKey } = require('./middlewares/auth-handler');
@@ -38,11 +41,18 @@ const options = {
 		}
 	},
 	credentials:true
-}
+};
+
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 25,
+});
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors(options));
+app.use(helmet());
+app.use(limiter);
 
 app.get('/', (req, res) => {
 	res.send('Welcome to Pet Log API');
